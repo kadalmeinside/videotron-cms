@@ -1,0 +1,96 @@
+<?php
+
+namespace App\Http\Controllers\Admin;
+
+use App\Http\Controllers\Controller;
+use App\Http\Requests\Admin\StoreVideotronRequest;
+use App\Http\Requests\Admin\UpdateVideotronRequest;
+use App\Models\Videotron;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Redirect;
+use Inertia\Inertia;
+
+class VideotronController extends Controller
+{
+    /**
+     * Display a listing of the resource.
+     */
+    public function index(Request $request)
+    {
+        $this->authorize('viewAny', Videotron::class);
+        $query = Videotron::orderBy('name');
+        if ($request->filled('search')) {
+            $search = $request->input('search');
+            $query->where('name', 'LIKE', "%{$search}%")
+                  ->orWhere('location_name', 'LIKE', "%{$search}%");
+        }
+        $videotrons = $query->paginate(10)->withQueryString();
+
+        return Inertia::render('Admin/Videotrons/Index', [
+            'videotronList' => $videotrons,
+            'filters' => $request->only(['search']),
+            'can' => ['manage_videotrons' => $request->user()->can('manage_videotrons')]
+        ]);
+    }
+
+    /**
+     * Show the form for creating a new resource.
+     */
+    public function create()
+    {
+        //
+    }
+
+    /**
+     * Store a newly created resource in storage.
+     */
+    public function store(StoreVideotronRequest $request)
+    {
+        Videotron::create($request->validated());
+        return Redirect::route('admin.videotrons.index')->with([
+            'message' => 'Videotron baru berhasil ditambahkan.',
+            'type' => 'success'
+        ]);
+    }
+
+    /**
+     * Display the specified resource.
+     */
+    public function show(string $id)
+    {
+        //
+    }
+
+    /**
+     * Show the form for editing the specified resource.
+     */
+    public function edit(string $id)
+    {
+        //
+    }
+
+    /**
+     * Update the specified resource in storage.
+     */
+    public function update(UpdateVideotronRequest $request, Videotron $videotron)
+    {
+        $videotron->update($request->validated());
+        return Redirect::route('admin.videotrons.index')->with([
+            'message' => 'Data videotron berhasil diperbarui.',
+            'type' => 'success'
+        ]);
+    }
+
+    /**
+     * Remove the specified resource from storage.
+     */
+    public function destroy(Videotron $videotron)
+    {
+        $this->authorize('delete', $videotron);
+        $videotron->delete();
+        return Redirect::route('admin.videotrons.index')->with([
+            'message' => 'Videotron berhasil dihapus.',
+            'type' => 'success'
+        ]);
+    }
+}
