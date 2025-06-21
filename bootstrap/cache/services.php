@@ -25,20 +25,16 @@
     21 => 'Illuminate\\Validation\\ValidationServiceProvider',
     22 => 'Illuminate\\View\\ViewServiceProvider',
     23 => 'Inertia\\ServiceProvider',
-    24 => 'Laravel\\Breeze\\BreezeServiceProvider',
-    25 => 'Laravel\\Pail\\PailServiceProvider',
-    26 => 'Laravel\\Reverb\\ApplicationManagerServiceProvider',
-    27 => 'Laravel\\Reverb\\ReverbServiceProvider',
-    28 => 'Laravel\\Sail\\SailServiceProvider',
-    29 => 'Laravel\\Sanctum\\SanctumServiceProvider',
-    30 => 'Laravel\\Tinker\\TinkerServiceProvider',
-    31 => 'Maatwebsite\\Excel\\ExcelServiceProvider',
-    32 => 'Carbon\\Laravel\\ServiceProvider',
-    33 => 'NunoMaduro\\Collision\\Adapters\\Laravel\\CollisionServiceProvider',
-    34 => 'Termwind\\Laravel\\TermwindServiceProvider',
-    35 => 'Spatie\\Permission\\PermissionServiceProvider',
-    36 => 'Tighten\\Ziggy\\ZiggyServiceProvider',
-    37 => 'App\\Providers\\AppServiceProvider',
+    24 => 'Laravel\\Reverb\\ApplicationManagerServiceProvider',
+    25 => 'Laravel\\Reverb\\ReverbServiceProvider',
+    26 => 'Laravel\\Sanctum\\SanctumServiceProvider',
+    27 => 'Laravel\\Tinker\\TinkerServiceProvider',
+    28 => 'Maatwebsite\\Excel\\ExcelServiceProvider',
+    29 => 'Carbon\\Laravel\\ServiceProvider',
+    30 => 'Termwind\\Laravel\\TermwindServiceProvider',
+    31 => 'Spatie\\Permission\\PermissionServiceProvider',
+    32 => 'Tighten\\Ziggy\\ZiggyServiceProvider',
+    33 => 'App\\Providers\\AppServiceProvider',
   ),
   'eager' => 
   array (
@@ -53,16 +49,14 @@
     8 => 'Illuminate\\Session\\SessionServiceProvider',
     9 => 'Illuminate\\View\\ViewServiceProvider',
     10 => 'Inertia\\ServiceProvider',
-    11 => 'Laravel\\Pail\\PailServiceProvider',
-    12 => 'Laravel\\Reverb\\ReverbServiceProvider',
-    13 => 'Laravel\\Sanctum\\SanctumServiceProvider',
-    14 => 'Maatwebsite\\Excel\\ExcelServiceProvider',
-    15 => 'Carbon\\Laravel\\ServiceProvider',
-    16 => 'NunoMaduro\\Collision\\Adapters\\Laravel\\CollisionServiceProvider',
-    17 => 'Termwind\\Laravel\\TermwindServiceProvider',
-    18 => 'Spatie\\Permission\\PermissionServiceProvider',
-    19 => 'Tighten\\Ziggy\\ZiggyServiceProvider',
-    20 => 'App\\Providers\\AppServiceProvider',
+    11 => 'Laravel\\Reverb\\ReverbServiceProvider',
+    12 => 'Laravel\\Sanctum\\SanctumServiceProvider',
+    13 => 'Maatwebsite\\Excel\\ExcelServiceProvider',
+    14 => 'Carbon\\Laravel\\ServiceProvider',
+    15 => 'Termwind\\Laravel\\TermwindServiceProvider',
+    16 => 'Spatie\\Permission\\PermissionServiceProvider',
+    17 => 'Tighten\\Ziggy\\ZiggyServiceProvider',
+    18 => 'App\\Providers\\AppServiceProvider',
   ),
   'deferred' => 
   array (
@@ -216,11 +210,8 @@
     'validator' => 'Illuminate\\Validation\\ValidationServiceProvider',
     'validation.presence' => 'Illuminate\\Validation\\ValidationServiceProvider',
     'Illuminate\\Contracts\\Validation\\UncompromisedVerifier' => 'Illuminate\\Validation\\ValidationServiceProvider',
-    'Laravel\\Breeze\\Console\\InstallCommand' => 'Laravel\\Breeze\\BreezeServiceProvider',
     'Laravel\\Reverb\\ApplicationManager' => 'Laravel\\Reverb\\ApplicationManagerServiceProvider',
     'Laravel\\Reverb\\Contracts\\ApplicationProvider' => 'Laravel\\Reverb\\ApplicationManagerServiceProvider',
-    'Laravel\\Sail\\Console\\InstallCommand' => 'Laravel\\Sail\\SailServiceProvider',
-    'Laravel\\Sail\\Console\\PublishCommand' => 'Laravel\\Sail\\SailServiceProvider',
     'command.tinker' => 'Laravel\\Tinker\\TinkerServiceProvider',
   ),
   'when' => 
@@ -264,13 +255,7 @@
     'Illuminate\\Validation\\ValidationServiceProvider' => 
     array (
     ),
-    'Laravel\\Breeze\\BreezeServiceProvider' => 
-    array (
-    ),
     'Laravel\\Reverb\\ApplicationManagerServiceProvider' => 
-    array (
-    ),
-    'Laravel\\Sail\\SailServiceProvider' => 
     array (
     ),
     'Laravel\\Tinker\\TinkerServiceProvider' => 
