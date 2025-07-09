@@ -42,7 +42,7 @@ const statItems = computed(() => [
         </div>
 
         <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
-            <div class="lg:col-span-2">
+            <!-- <div class="lg:col-span-2">
                 <div class="bg-white p-6 rounded-lg shadow-md">
                     <h2 class="text-xl font-semibold mb-4 flex items-center"><PlayCircleIcon class="h-6 w-6 mr-2 text-green-500"/>Sedang Tayang Saat Ini</h2>
                     <div v-if="nowPlaying.length" class="space-y-4">
@@ -56,7 +56,7 @@ const statItems = computed(() => [
                         <p class="text-gray-500">Tidak ada jadwal yang sedang tayang.</p>
                     </div>
                 </div>
-            </div>
+            </div> -->
 
             <div class="lg:col-span-1">
                 <div class="bg-white p-6 rounded-lg shadow-md">

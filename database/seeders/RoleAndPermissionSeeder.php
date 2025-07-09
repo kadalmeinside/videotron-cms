@@ -40,7 +40,7 @@ class RoleAndPermissionSeeder extends Seeder
         $managerRole->givePermissionTo(['manage_content', 'manage_schedules', 'view_reports', 'approve_media']);
 
         $clientRole = Role::create(['name' => 'client']);
-        $clientRole->givePermissionTo(['view reports']);
+        $clientRole->givePermissionTo(['view_reports']);
 
         $this->command->info('Roles and Permissions seeded successfully!');
     }

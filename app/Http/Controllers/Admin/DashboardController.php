@@ -25,10 +25,10 @@ class DashboardController extends Controller
         ];
 
         // 2. Data untuk Widget "Sedang Tayang"
-        $nowPlaying = Schedule::with(['playlist', 'videotron'])
-            ->where('start_time', '<=', now())
-            ->where('end_time', '>=', now())
-            ->get();
+        // $nowPlaying = Schedule::with(['playlist', 'videotron'])
+        //     ->where('start_time', '<=', now())
+        //     ->where('end_time', '>=', now())
+        //     ->get();
 
         // 3. Data untuk Widget "Media Menunggu Persetujuan"
         $pendingMedia = Media::with('client')
@@ -39,7 +39,6 @@ class DashboardController extends Controller
 
         return Inertia::render('Admin/Dashboard', [
             'stats' => $stats,
-            'nowPlaying' => $nowPlaying,
             'pendingMedia' => $pendingMedia,
         ]);
     }

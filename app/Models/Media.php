@@ -32,4 +32,9 @@ class Media extends Model
         // Jika tidak, kembalikan null
         return null;
     }
+
+    public function scheduleItems(): HasMany
+    {
+        return $this->hasMany(ScheduleItem::class);
+    }
 }

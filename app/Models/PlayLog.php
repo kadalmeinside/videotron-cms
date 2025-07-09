@@ -28,8 +28,8 @@ class PlayLog extends Model
         return $this->belongsTo(Playlist::class);
     }
 
-    public function schedule(): BelongsTo
+    public function scheduleItem(): BelongsTo
     {
-        return $this->belongsTo(Schedule::class);
+        return $this->belongsTo(ScheduleItem::class);
     }
 }

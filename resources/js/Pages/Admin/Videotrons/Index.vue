@@ -28,6 +28,7 @@ const isEditMode = ref(false);
 const showDeleteConfirmModal = ref(false);
 const videotronToDelete = ref(null);
 const searchQuery = ref(filters.value.search);
+
 const form = useForm({
     id: null,
     name: '',
@@ -36,6 +37,8 @@ const form = useForm({
     longitude: '',
     resolution: '',
     status: 'active',
+    device_id: '',
+    password: '',
 });
 
 // Watcher untuk search
@@ -68,6 +71,7 @@ const openEditModal = (videotron) => {
     form.longitude = videotron.longitude;
     form.resolution = videotron.resolution;
     form.status = videotron.status;
+    form.device_id = videotron.device_id;
     showVideotronModal.value = true;
 };
 
@@ -126,8 +130,8 @@ const deleteVideotron = () => {
                                 <thead class="bg-gray-50">
                                     <tr>
                                         <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Nama</th>
+                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Device ID</th>
                                         <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Lokasi</th>
-                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Resolusi</th>
                                         <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Status</th>
                                         <th class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase">Aksi</th>
                                     </tr>
@@ -136,8 +140,8 @@ const deleteVideotron = () => {
                                     <tr v-if="!videotronList.data.length"><td colspan="5" class="px-6 py-4 text-center">Tidak ada data.</td></tr>
                                     <tr v-else v-for="item in videotronList.data" :key="item.id">
                                         <td class="px-6 py-4 font-medium">{{ item.name }}</td>
+                                        <td class="px-6 py-4 font-mono text-xs text-gray-500">{{ item.device_id || '-' }}</td>
                                         <td class="px-6 py-4">{{ item.location_name }}</td>
-                                        <td class="px-6 py-4">{{ item.resolution }}</td>
                                         <td class="px-6 py-4"><span :class="['px-2 inline-flex text-xs leading-5 font-semibold rounded-full', item.status === 'active' ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800']">{{ item.status }}</span></td>
                                         <td class="px-6 py-4 text-right">
                                             <button @click="openEditModal(item)" class="p-1 mr-2 text-indigo-600 hover:text-indigo-900"><PencilIcon class="h-5 w-5" /></button>
@@ -160,6 +164,16 @@ const deleteVideotron = () => {
                         <InputLabel for="name" value="Nama Videotron" required />
                         <TextInput id="name" v-model="form.name" class="mt-1 w-full" placeholder="Cth: VTR-JKT-01" />
                         <InputError :message="form.errors.name" class="mt-2" />
+                    </div>
+                    <div class="md:col-span-2">
+                        <InputLabel for="device_id" value="Device ID (dari STB)" />
+                        <TextInput id="device_id" v-model="form.device_id" class="mt-1 w-full font-mono" placeholder="ID unik dari perangkat Android" />
+                        <InputError :message="form.errors.device_id" class="mt-2" />
+                    </div>
+                    <div class="md:col-span-2">
+                        <InputLabel for="password" value="Password Player" />
+                        <TextInput id="password" v-model="form.password" type="password" class="mt-1 w-full" :placeholder="isEditMode ? 'Kosongkan jika tidak ingin diubah' : 'Min. 6 karakter'" />
+                        <InputError :message="form.errors.password" class="mt-2" />
                     </div>
                     <div>
                         <InputLabel for="location_name" value="Nama Lokasi" required />

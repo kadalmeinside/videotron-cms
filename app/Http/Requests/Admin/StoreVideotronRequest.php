@@ -28,6 +28,8 @@ class StoreVideotronRequest extends FormRequest
             'longitude' => 'nullable|numeric|between:-180,180',
             'resolution' => 'nullable|string|max:50',
             'status' => 'required|in:active,inactive,maintenance',
+            'device_id' => ['nullable', 'string', 'max:255', 'unique:videotrons,device_id'],
+            'password' => ['nullable', 'string', 'min:6'],
         ];
     }
 }

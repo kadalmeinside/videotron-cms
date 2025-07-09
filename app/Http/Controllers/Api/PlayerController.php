@@ -6,13 +6,51 @@ use App\Http\Controllers\Controller;
 use App\Events\VideotronOnline;
 use App\Models\Videotron;
 use App\Models\Schedule;
+use App\Models\ScheduleItem;
 use Illuminate\Support\Facades\Broadcast;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Validation\ValidationException;
 
 class PlayerController extends Controller
 {
+    public function getSchedule(Request $request, Videotron $videotron)
+    {
+        $request->validate([
+            'date' => 'required|date_format:Y-m-d',
+        ]);
+
+        $scheduleItems = ScheduleItem::with('media')
+            ->where('videotron_id', $videotron->id)
+            ->whereDate('play_at', $request->date)
+            ->orderBy('play_at', 'asc')
+            ->get();
+
+        $formattedSchedule = $scheduleItems->map(function ($item) {
+            return [
+                'play_at' => $item->play_at->toIso8601String(),
+                'media' => [
+                    'id' => $item->media->id,
+                    'source_type' => $item->media->source_type,
+                    'source_value' => $item->media->source_type === 'local' 
+                        ? Storage::url($item->media->source_value) 
+                        : $item->media->source_value,
+                    'duration' => $item->media->duration,
+
+                    'top_banner_url' => $item->media->top_banner_path ? Storage::url($item->media->top_banner_path) : null,
+                    'bottom_banner_url' => $item->media->bottom_banner_path ? Storage::url($item->media->bottom_banner_path) : null,
+                    'running_text' => $item->media->running_text,
+                ]
+            ];
+        });
+
+        return response()->json([
+            'date' => $request->date,
+            'schedule' => $formattedSchedule,
+        ]);
+    }
+
     public function now(Videotron $videotron)
     {
         $schedule = Schedule::with(['playlist.media' => function ($query) {
@@ -91,27 +129,51 @@ class PlayerController extends Controller
         return Broadcast::auth($request);
     }
 
+    // public function login(Request $request)
+    // {
+    //     $request->validate([
+    //         'uuid' => ['required', 'uuid'],
+    //         'password' => ['required', 'string'],
+    //     ]);
+        
+    //     $videotron = Videotron::where('id', $request->uuid)->first();
+
+    //     // Verifikasi videotron dan password
+    //     if (! $videotron || ! Hash::check($request->password, $videotron->password)) {
+    //         throw ValidationException::withMessages([
+    //             'uuid' => ['Kredensial yang diberikan tidak cocok dengan catatan kami.'],
+    //         ]);
+    //     }
+
+    //     // Hapus token lama jika ada untuk menjaga kebersihan
+    //     $videotron->tokens()->delete();
+
+    //     // Buat token baru
+    //     $token = $videotron->createToken('videotron-auth-token')->plainTextToken;
+
+    //     return response()->json(['token' => $token]);
+    // }
+
     public function login(Request $request)
     {
         $request->validate([
-            'uuid' => ['required', 'uuid'],
+            'id' => ['nullable', 'string', 'exists:videotrons,id'],
+            'device_id' => ['nullable', 'string', 'exists:videotrons,device_id'],
             'password' => ['required', 'string'],
         ]);
-        
-        $videotron = Videotron::where('id', $request->uuid)->first();
 
-        // Verifikasi videotron dan password
+        $videotron = Videotron::where('id', $request->id)
+                                ->orWhere('device_id', $request->device_id)
+                                ->first();
+
         if (! $videotron || ! Hash::check($request->password, $videotron->password)) {
             throw ValidationException::withMessages([
-                'uuid' => ['Kredensial yang diberikan tidak cocok dengan catatan kami.'],
+                'device_id' => ['Kredensial yang diberikan tidak cocok.'],
             ]);
         }
 
-        // Hapus token lama jika ada untuk menjaga kebersihan
         $videotron->tokens()->delete();
-
-        // Buat token baru
-        $token = $videotron->createToken('videotron-auth-token')->plainTextToken;
+        $token = $videotron->createToken('stb-auth-token')->plainTextToken;
 
         return response()->json(['token' => $token]);
     }

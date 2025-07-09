@@ -23,11 +23,12 @@
         "vue": "^3.4.0"
     },
     "dependencies": {
-        "@fullcalendar/core": "^6.1.17",
+        "@fullcalendar/core": "^6.1.18",
         "@fullcalendar/daygrid": "^6.1.17",
-        "@fullcalendar/interaction": "^6.1.17",
+        "@fullcalendar/interaction": "^6.1.18",
+        "@fullcalendar/resource-timeline": "^6.1.18",
         "@fullcalendar/timegrid": "^6.1.17",
-        "@fullcalendar/vue3": "^6.1.17",
+        "@fullcalendar/vue3": "^6.1.18",
         "@heroicons/vue": "^2.2.0",
         "chart.js": "^4.4.9",
         "plyr": "^3.7.8",

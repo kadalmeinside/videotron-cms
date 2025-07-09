@@ -16,6 +16,7 @@ use App\Http\Controllers\Admin\MediaController;
 use App\Http\Controllers\Admin\MediaApprovalController;
 use App\Http\Controllers\Admin\PlaylistController;
 use App\Http\Controllers\Admin\ScheduleController;
+use App\Http\Controllers\Admin\ScheduleBuilderController;
 use App\Http\Controllers\Admin\RoleController;
 use App\Http\Controllers\Admin\PermissionController;
 use App\Http\Controllers\Admin\UserController;
@@ -80,7 +81,9 @@ Route::prefix('admin')->name('admin.')->group(function () {
             });
             Route::resource('media', MediaController::class);
             Route::resource('playlists', PlaylistController::class);
-            Route::resource('schedules', ScheduleController::class);
+            Route::get('/schedule-builder', [ScheduleBuilderController::class, 'index'])->name('schedule.builder');
+            Route::get('/schedules', [ScheduleController::class, 'index'])->name('schedules.index');
+            Route::get('/schedules/{videotron:id}', [ScheduleController::class, 'show'])->name('schedules.show');
             Route::get('/reports', [ReportController::class, 'index'])->name('reports.index');
             Route::get('/reports/export', [ReportController::class, 'export'])->name('reports.export');
             Route::get('/monitoring', [MonitoringController::class, 'index'])->name('monitoring.index');

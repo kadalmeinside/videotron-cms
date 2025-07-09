@@ -104,6 +104,7 @@ const sidebarMenu = computed(() => {
             { type: 'link', name: 'Persetujuan', route: 'admin.media.approvals.index', icon: ShieldCheckIcon, current: 'admin.media.approvals.*', permission: 'approve_media', badge: pendingMediaCount.value },
             { type: 'link', name: 'Playlists', route: 'admin.playlists.index', icon: QueueListIcon, current: 'admin.playlists.*', permission: 'manage_playlists' },
             { type: 'link', name: 'Schedules', route: 'admin.schedules.index', icon: CalendarDaysIcon, current: 'admin.schedules.*', permission: 'manage_schedules' },
+            { type: 'link', name: 'Schedules Build', route: 'admin.schedule.builder', icon: CalendarDaysIcon, current: 'admin.schedule.builder', permission: 'manage_schedules' },
             { type: 'link', name: 'Reports', route: 'admin.reports.index', icon: DocumentChartBarIcon, current: 'admin.reports.*', permission: 'view_reports' },
             { type: 'link', name: 'Monitoring', route: 'admin.monitoring.index', icon: SignalIcon, current: 'admin.monitoring.*', permission: 'view_reports' },
             { type: 'heading', label: 'Pengaturan Sistem' },

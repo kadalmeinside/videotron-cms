@@ -1,116 +1,85 @@
 <script setup>
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
-import { Head, useForm, usePage } from '@inertiajs/vue3';
-import { ref, computed } from 'vue';
-import FullCalendar from '@fullcalendar/vue3';
-import dayGridPlugin from '@fullcalendar/daygrid';
-import timeGridPlugin from '@fullcalendar/timegrid';
-import interactionPlugin from '@fullcalendar/interaction';
-import axios from 'axios';
+import { Head, Link, usePage } from '@inertiajs/vue3';
+import { computed } from 'vue';
+import { EyeIcon, CalendarDaysIcon } from '@heroicons/vue/24/outline';
 
-// Komponen Modal dan Form
-import Modal from '@/Components/Modal.vue';
-import InputLabel from '@/Components/InputLabel.vue';
-import InputError from '@/Components/InputError.vue';
-import PrimaryButton from '@/Components/PrimaryButton.vue';
-import SecondaryButton from '@/Components/SecondaryButton.vue';
-
-
-const page = usePage();
-const playlists = computed(() => page.props.playlists);
-const videotrons = computed(() => page.props.videotrons);
-
-// State untuk modal
-const showScheduleModal = ref(false);
-const form = useForm({
-    id: null,
-    playlist_id: '',
-    videotron_id: '',
-    start_time: '',
-    end_time: '',
+const props = defineProps({
+    videotrons: Array,
 });
 
-const calendarOptions = {
-    plugins: [dayGridPlugin, timeGridPlugin, interactionPlugin],
-    initialView: 'timeGridWeek', // Tampilan awal per minggu
-    headerToolbar: {
-        left: 'prev,next today',
-        center: 'title',
-        right: 'dayGridMonth,timeGridWeek,timeGridDay'
-    },
-    editable: true, // bisa di drag-n-drop
-    selectable: true, // bisa memilih slot waktu
-    events: (fetchInfo, successCallback, failureCallback) => {
-        axios.get(route('admin.schedules.index', {
-            start: fetchInfo.startStr,
-            end: fetchInfo.endStr
-        }))
-        .then(response => successCallback(response.data))
-        .catch(error => failureCallback(error));
-    },
-    select: (selectionInfo) => {
-        form.reset();
-        form.clearErrors();
-        form.start_time = selectionInfo.startStr;
-        form.end_time = selectionInfo.endStr;
-        showScheduleModal.value = true;
-    },
-    // eventClick, eventDrop bisa ditambahkan di sini untuk edit/delete
-};
-
-const submitSchedule = () => {
-    form.post(route('admin.schedules.store'), {
-        onSuccess: () => {
-            showScheduleModal.value = false;
-            // Di dunia nyata, kita akan panggil refetchEvents() pada kalender
-        },
+const formatDateTime = (datetime) => {
+    if (!datetime) return '';
+    return new Date(datetime).toLocaleString('id-ID', {
+        weekday: 'short', day: '2-digit', month: 'short', hour: '2-digit', minute: '2-digit'
     });
 };
-
 </script>
 
 <template>
-    <Head title="Penjadwalan" />
-
+    <Head title="Manajemen Jadwal" />
     <AuthenticatedLayout>
         <template #header>
-            <h2 class="font-semibold text-xl text-gray-800 dark:text-gray-200 leading-tight">Kalender Penjadwalan</h2>
+            <h2 class="font-semibold text-xl text-gray-800 dark:text-gray-200 leading-tight">
+                Manajemen Jadwal
+            </h2>
         </template>
         
-        <Toast :message="flashMessage" :type="flashType" />
+        <div class="py-12">
+            <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
+                <div class="bg-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg">
+                    <div class="p-6 text-gray-900 dark:text-gray-100">
+                        <h3 class="text-lg font-medium leading-6 text-gray-900 dark:text-gray-200">
+                            Daftar Videotron
+                        </h3>
+                        <p class="mt-1 text-sm text-gray-500 dark:text-gray-400">
+                            Pilih videotron untuk melihat atau mengedit jadwal lengkapnya.
+                        </p>
+                        
+                        <div class="mt-6 border-t border-gray-200 dark:border-gray-700">
+                            <ul role="list" class="divide-y divide-gray-200 dark:divide-gray-700">
+                                <li v-for="videotron in videotrons" :key="videotron.id" class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-x-6 py-5">
+                                    <!-- Info Videotron -->
+                                    <div class="min-w-0">
+                                        <div class="flex items-start gap-x-3">
+                                            <p class="text-sm font-semibold leading-6 text-gray-900 dark:text-white">{{ videotron.name }}</p>
+                                            <span :class="[videotron.status === 'active' ? 'bg-green-50 text-green-700 ring-green-600/20' : 'bg-red-50 text-red-700 ring-red-600/20', 'rounded-md whitespace-nowrap mt-0.5 px-1.5 py-0.5 text-xs font-medium ring-1 ring-inset']">
+                                                {{ videotron.status }}
+                                            </span>
+                                        </div>
+                                        <div class="mt-1 flex items-center gap-x-2 text-xs leading-5 text-gray-500 dark:text-gray-400">
+                                            <p class="whitespace-nowrap font-mono">{{ videotron.device_id || 'Device ID belum diatur' }}</p>
+                                        </div>
+                                    </div>
+                                    
+                                    <!-- Ringkasan Jadwal -->
+                                    <div class="min-w-0 flex-auto mt-4 sm:mt-0">
+                                        <div v-if="videotron.schedule_items.length > 0" class="space-y-1">
+                                            <p class="text-xs font-semibold text-gray-500 dark:text-gray-400">Jadwal Berikutnya:</p>
+                                            <div v-for="item in videotron.schedule_items" :key="item.id" class="flex items-center gap-x-2">
+                                                <p class="text-sm leading-6 text-gray-900 dark:text-white truncate" :title="item.media.title">
+                                                   <span class="font-mono">{{ formatDateTime(item.play_at) }}</span> - {{ item.media.title }}
+                                                </p>
+                                            </div>
+                                        </div>
+                                        <div v-else class="flex items-center justify-start text-sm text-gray-500 dark:text-gray-400">
+                                            <CalendarDaysIcon class="h-5 w-5 mr-2" />
+                                            <span>Jadwal kosong</span>
+                                        </div>
+                                    </div>
 
-        <div class="pb-12 pt-4">
-            <div class="max-w-full mx-auto">
-                <div class="bg-white p-4 rounded-lg shadow">
-                    <FullCalendar :options="calendarOptions" />
+                                    <!-- Tombol Aksi -->
+                                    <div class="flex flex-none items-center gap-x-4 mt-4 sm:mt-0">
+                                        <Link :href="route('admin.schedules.show', videotron.id)" class="hidden rounded-md bg-white px-2.5 py-1.5 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50 sm:block">
+                                            View / Edit<span class="sr-only">, {{ videotron.name }}</span>
+                                        </Link>
+                                    </div>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
-
-        <Modal :show="showScheduleModal" @close="showScheduleModal = false">
-            <form @submit.prevent="submitSchedule" class="p-6">
-                <h2 class="text-lg font-medium mb-4">Buat Jadwal Baru</h2>
-                <div class="space-y-4">
-                    <div>
-                        <InputLabel for="playlist_id" value="Pilih Playlist" />
-                        <select v-model="form.playlist_id" id="playlist_id" class="w-full mt-1 border-gray-300 rounded-md">
-                            <option v-for="p in playlists" :key="p.id" :value="p.id">{{ p.name }}</option>
-                        </select>
-                        <InputError :message="form.errors.playlist_id" class="mt-1" />
-                    </div>
-                    <div>
-                        <InputLabel for="videotron_id" value="Pilih Videotron" />
-                        <select v-model="form.videotron_id" id="videotron_id" class="w-full mt-1 border-gray-300 rounded-md">
-                            <option v-for="v in videotrons" :key="v.id" :value="v.id">{{ v.name }}</option>
-                        </select>
-                        <InputError :message="form.errors.videotron_id" class="mt-1" />
-                    </div>
-                    </div>
-                <div class="mt-6 flex justify-end">
-                    <SecondaryButton @click="showScheduleModal = false">Batal</SecondaryButton>
-                    <PrimaryButton class="ml-3" :disabled="form.processing">Simpan Jadwal</PrimaryButton>
-                </div>
-            </form>
-        </Modal>
     </AuthenticatedLayout>
 </template>

@@ -30,7 +30,7 @@ class UpdateMediaRequest extends FormRequest
             
             // Validasi untuk field "virtual" dari form upload.
             // Bersifat opsional (nullable) saat update.
-            'source_file' => 'nullable|file|mimes:mp4,mov,jpg,jpeg,png,webp|max:20480',
+            'source_file' => 'nullable|file|mimes:mp4,mov,jpg,jpeg,png,webp',
             'top_banner_file' => 'nullable|image|max:2048',
             'bottom_banner_file' => 'nullable|image|max:2048',
 

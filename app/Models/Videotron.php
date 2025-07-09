@@ -9,6 +9,7 @@ use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Laravel\Sanctum\HasApiTokens;
 use Illuminate\Contracts\Auth\Authenticatable as AuthenticatableContract;
 use Illuminate\Auth\Authenticatable;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Videotron extends Model
 {
@@ -18,13 +19,22 @@ class Videotron extends Model
     
     protected $guarded = [];
 
+    protected $hidden = [
+        'password',
+    ];
+
     public function schedules()
     {
         return $this->hasMany(Schedule::class);
     }
 
+    public function scheduleItems(): HasMany
+    {
+        return $this->hasMany(ScheduleItem::class);
+    }
+
     public function getRouteKeyName()
     {
-        return 'uuid';
+        return 'id';
     }
 }

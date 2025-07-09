@@ -7,6 +7,7 @@ use App\Http\Requests\Admin\StoreVideotronRequest;
 use App\Http\Requests\Admin\UpdateVideotronRequest;
 use App\Models\Videotron;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Hash;  
 use Illuminate\Support\Facades\Redirect;
 use Inertia\Inertia;
 
@@ -46,11 +47,14 @@ class VideotronController extends Controller
      */
     public function store(StoreVideotronRequest $request)
     {
-        Videotron::create($request->validated());
-        return Redirect::route('admin.videotrons.index')->with([
-            'message' => 'Videotron baru berhasil ditambahkan.',
-            'type' => 'success'
-        ]);
+        $validated = $request->validated();
+        
+        if (!empty($validated['password'])) {
+            $validated['password'] = Hash::make($validated['password']);
+        }
+
+        Videotron::create($validated);
+        return redirect()->route('admin.videotrons.index')->with('success', 'Videotron berhasil dibuat.');
     }
 
     /**
@@ -74,11 +78,16 @@ class VideotronController extends Controller
      */
     public function update(UpdateVideotronRequest $request, Videotron $videotron)
     {
-        $videotron->update($request->validated());
-        return Redirect::route('admin.videotrons.index')->with([
-            'message' => 'Data videotron berhasil diperbarui.',
-            'type' => 'success'
-        ]);
+        $validated = $request->validated();
+        
+        if (!empty($validated['password'])) {
+            $validated['password'] = Hash::make($validated['password']);
+        } else {
+            unset($validated['password']);
+        }
+
+        $videotron->update($validated);
+        return redirect()->route('admin.videotrons.index')->with('success', 'Videotron berhasil diperbarui.');
     }
 
     /**

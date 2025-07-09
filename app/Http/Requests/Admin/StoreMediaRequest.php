@@ -29,7 +29,7 @@ class StoreMediaRequest extends FormRequest
             'source_value' => ['required_if:source_type,youtube,vimeo', 'nullable', 'string', 'max:255', 'url'],
             
             // Gunakan nama field yang jelas untuk upload, misal '..._file'
-            'source_file' => ['required_if:source_type,local', 'nullable', 'file', 'mimes:mp4,mov,jpg,jpeg,png,webp', 'max:20480'],
+            'source_file' => ['required_if:source_type,local', 'nullable', 'file', 'mimes:mp4,mov,jpg,jpeg,png,webp'],
             'top_banner_file' => 'nullable|image|max:2048',
             'bottom_banner_file' => 'nullable|image|max:2048',
 
