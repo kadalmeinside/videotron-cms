@@ -36,6 +36,6 @@ Route::get('/device/check/{device_id}', [DeviceController::class, 'checkStatus']
 Route::post('/device/login', [DeviceController::class, 'login']);
 
 Route::middleware('auth:sanctum')->group(function () {
-    // Endpoint untuk perangkat yang sudah login mengunduh semua jadwalnya
     Route::get('/device/schedules', [DeviceController::class, 'getSchedules']);
+    Route::post('/logs/sync', [LogSyncController::class, 'sync']);
 });
