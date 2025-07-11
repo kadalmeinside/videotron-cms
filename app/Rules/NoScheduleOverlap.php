@@ -47,19 +47,15 @@ class NoScheduleOverlap implements DataAwareRule, InvokableRule
      */
     public function __invoke(string $attribute, mixed $value, Closure $fail): void
     {
-        // Ambil durasi dari media yang dipilih
         $media = Media::find($this->data['media_id']);
         if (!$media) {
-            // Jika media tidak ditemukan, lewati validasi ini
             return;
         }
         $duration = $media->duration;
 
-        // Hitung waktu mulai dan selesai dari item baru
         $startTime = Carbon::createFromFormat('Y-m-d H:i', $this->data['schedule_date'] . ' ' . $this->data['play_time']);
-        $endTime = $startTime->copy()->addSeconds($duration);
+        $endTime = $startTime->copy()->addSeconds((int) $duration);
 
-        // Query untuk mencari jadwal yang tumpang tindih
         $query = ScheduleItem::where('videotron_id', $this->data['videotron_id'])
             ->whereDate('play_at', $this->data['schedule_date'])
             ->where(function ($q) use ($startTime, $endTime) {
@@ -67,12 +63,10 @@ class NoScheduleOverlap implements DataAwareRule, InvokableRule
                   ->whereRaw('TIMESTAMPADD(SECOND, duration_in_seconds, play_at) > ?', [$startTime]);
             });
             
-        // Jika sedang update, abaikan item itu sendiri dari pengecekan
         if ($this->ignoreId) {
             $query->where('id', '!=', $this->ignoreId);
         }
 
-        // Jika ditemukan ada jadwal yang tumpang tindih
         if ($query->exists()) {
             $fail('Slot waktu ini tumpang tindih dengan jadwal lain yang sudah ada.');
         }

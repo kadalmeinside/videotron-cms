@@ -7,6 +7,7 @@ use App\Http\Controllers\Api\PlayLogController;
 use App\Http\Controllers\Admin\ScheduleBuilderController;
 use App\Http\Controllers\Admin\Api\ScheduleItemController;
 use App\Http\Controllers\Api\DeviceController;
+use App\Http\Controllers\Api\LogSyncController;
 
 Route::get('/user', function (Request $request) {
     return $request->user();
