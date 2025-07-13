@@ -40,3 +40,14 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('/device/schedules', [DeviceController::class, 'getSchedules']);
     Route::post('/logs/sync', [LogSyncController::class, 'sync']);
 });
+
+Route::middleware('auth:sanctum')->prefix('device')->group(function () {
+    // Endpoint untuk cek versi
+    Route::get('/config', [DeviceController::class, 'getConfig']);
+    
+    // Endpoint untuk mengambil detail schedule berdasarkan ID
+    Route::get('/schedule/{schedule}', [DeviceController::class, 'getScheduleDetail']);
+    
+    // Endpoint untuk mengambil detail playlist musik berdasarkan ID
+    Route::get('/playlist/{playlist}', [DeviceController::class, 'getPlaylistDetail']);
+});

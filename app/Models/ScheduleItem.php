@@ -17,9 +17,16 @@ class ScheduleItem extends Model
      */
     protected $guarded = [];
 
+    protected $touches = ['schedule'];
+
     protected $casts = [
         'play_at' => 'datetime',
     ];
+
+    public function schedule(): BelongsTo
+    {
+        return $this->belongsTo(Schedule::class);
+    }
 
 
     /**

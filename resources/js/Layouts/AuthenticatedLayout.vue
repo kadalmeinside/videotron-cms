@@ -23,6 +23,7 @@ import {
     CalendarDaysIcon,
     DocumentChartBarIcon,
     SignalIcon,
+    MusicalNoteIcon,
 } from '@heroicons/vue/24/outline';
 
 const page = usePage();
@@ -101,6 +102,7 @@ const sidebarMenu = computed(() => {
             { type: 'link', name: 'Clients', route: 'admin.clients.index', icon: UserGroupIcon, current: 'admin.clients.*', permission: 'manage_clients' },
             { type: 'link', name: 'Videotron', route: 'admin.videotrons.index', icon: ComputerDesktopIcon, current: 'admin.videotrons.*', permission: 'manage_videotrons' },
             { type: 'link', name: 'Media', route: 'admin.media.index', icon: VideoCameraIcon, current: 'admin.media.index', permission: 'manage_media' },
+            { type: 'link', name: 'Music', route: 'admin.music.index', icon: MusicalNoteIcon, current: 'admin.music.index', permission: 'manage_media' },
             { type: 'link', name: 'Persetujuan', route: 'admin.media.approvals.index', icon: ShieldCheckIcon, current: 'admin.media.approvals.*', permission: 'approve_media', badge: pendingMediaCount.value },
             { type: 'link', name: 'Playlists', route: 'admin.playlists.index', icon: QueueListIcon, current: 'admin.playlists.*', permission: 'manage_playlists' },
             { type: 'link', name: 'Schedules', route: 'admin.schedules.index', icon: CalendarDaysIcon, current: 'admin.schedules.*', permission: 'manage_schedules' },

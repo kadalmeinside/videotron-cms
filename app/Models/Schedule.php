@@ -15,13 +15,9 @@ class Schedule extends Model
 
     protected $guarded = [];
 
-    protected $casts = [
-        'schedule_date' => 'date',
-    ];
-
     public function videotron()
     {
-        return $this->belongsTo(Videotron::class);
+        return $this->hasMany(Videotron::class);
     }
     
     public function playlist()
@@ -31,6 +27,6 @@ class Schedule extends Model
 
     public function scheduleItems(): HasMany
     {
-        return $this->hasMany(ScheduleItem::class)->orderBy('play_time');
+        return $this->hasMany(ScheduleItem::class)->orderBy('play_at');
     }
 }

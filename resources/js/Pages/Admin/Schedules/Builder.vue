@@ -13,7 +13,7 @@ import TextInput from '@/Components/TextInput.vue';
 import axios from 'axios';
 
 const props = defineProps({
-    videotron: Object,
+    schedule: Object,
     scheduledDays: Object,
     allMedia: Array,
 });
@@ -91,7 +91,7 @@ const saveItem = async () => {
         play_time: play_time,
         schedule_date: form.schedule_date,
         media_id: form.media_id,
-        videotron_id: props.videotron.id,
+        schedule_id: props.schedule.id,
     };
     
     const url = isEditMode.value 
@@ -159,7 +159,7 @@ const showToast = (message, type = 'info') => {
 </script>
 
 <template>
-    <Head :title="`Jadwal untuk ${videotron.name}`" />
+    <Head :title="`Jadwal untuk ${schedule.name}`" />
     <AuthenticatedLayout>
         <template #header>
             <div class="flex items-center">
@@ -167,15 +167,15 @@ const showToast = (message, type = 'info') => {
                     &larr; Kembali
                 </Link>
                 <h2 class="font-semibold text-xl text-gray-800 dark:text-gray-200 leading-tight">
-                    Jadwal untuk <span class="text-[--color-primary-600]">{{ videotron.name }}</span>
+                    Jadwal untuk <span class="text-[--color-primary-600]">{{ schedule.name }}</span>
                 </h2>
             </div>
         </template>
         
         <Toast :message="localFlash.message" :type="localFlash.type" :show="localFlash.show" @close="localFlash.show = false" />
 
-        <div class="py-12">
-            <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
+        <div class="pb-12 pt-4">
+            <div class="max-w-full mx-auto">
                 <div class="space-y-8">
 
                     <div class="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-sm">
@@ -194,7 +194,7 @@ const showToast = (message, type = 'info') => {
                     <div v-if="Object.keys(scheduledDays).length === 0" class="text-center bg-white dark:bg-gray-800 p-12 rounded-lg shadow-sm">
                         <CalendarDaysIcon class="mx-auto h-12 w-12 text-gray-400" />
                         <h3 class="mt-2 text-sm font-semibold text-gray-900 dark:text-white">Jadwal Kosong</h3>
-                        <p class="mt-1 text-sm text-gray-500">Belum ada jadwal yang dibuat untuk videotron ini. Gunakan form di atas untuk memulai.</p>
+                        <p class="mt-1 text-sm text-gray-500">Belum ada jadwal yang dibuat untuk schedule ini. Gunakan form di atas untuk memulai.</p>
                     </div>
 
                     <div v-for="(items, date) in scheduledDays" :key="date" class="bg-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg">

@@ -3,6 +3,7 @@
 namespace App\Rules;
 
 use App\Models\Media;
+use App\Models\Schedule;
 use App\Models\ScheduleItem;
 use Closure;
 use Illuminate\Contracts\Validation\ValidationRule;
@@ -56,7 +57,7 @@ class NoScheduleOverlap implements DataAwareRule, InvokableRule
         $startTime = Carbon::createFromFormat('Y-m-d H:i', $this->data['schedule_date'] . ' ' . $this->data['play_time']);
         $endTime = $startTime->copy()->addSeconds((int) $duration);
 
-        $query = ScheduleItem::where('videotron_id', $this->data['videotron_id'])
+        $query = ScheduleItem::where('schedule_id', $this->data['schedule_id'])
             ->whereDate('play_at', $this->data['schedule_date'])
             ->where(function ($q) use ($startTime, $endTime) {
                 $q->where('play_at', '<', $endTime)

@@ -19,6 +19,8 @@ return new class extends Migration
             $table->decimal('longitude', 11, 7)->nullable();
             $table->string('resolution')->nullable()->comment('e.g., 1920x1080');
             $table->enum('status', ['active', 'inactive', 'maintenance'])->default('active');
+            $table->foreignId('playlist_id')->nullable()->constrained('playlists')->onDelete('set null');
+            $table->foreignId('schedule_id')->nullable()->constrained('schedules')->onDelete('set null');
             $table->softDeletes();
             $table->timestamps();
         });

@@ -11,7 +11,7 @@ class UpdatePlaylistRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return $this->user()->can('manage_playlists');
+        return true;
     }
 
     /**
@@ -24,9 +24,10 @@ class UpdatePlaylistRequest extends FormRequest
         return [
             'name' => 'required|string|max:255',
             'description' => 'nullable|string',
-            'media' => 'present|array',
-            'media.*.id' => 'required|integer|exists:media,id',
-            'media.*.play_order' => 'required|integer',
+            // Validasi untuk array musik
+            'music' => 'present|array',
+            'music.*.id' => 'required|integer|exists:musics,id',
+            'music.*.play_order' => 'required|integer',
         ];
     }
 }

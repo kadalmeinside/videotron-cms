@@ -3,144 +3,125 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
-use App\Http\Requests\Admin\StorePlaylistRequest;
-use App\Http\Requests\Admin\UpdatePlaylistRequest;
-use App\Models\Media;
 use App\Models\Playlist;
+use App\Models\Music;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Redirect;
 use Inertia\Inertia;
+// Gunakan Form Request yang lebih sederhana
+use App\Http\Requests\Admin\StorePlaylistRequest; 
+use App\Http\Requests\Admin\UpdatePlaylistRequest;
 
 class PlaylistController extends Controller
 {
     /**
-     * Display a listing of the resource.
+     * Menampilkan daftar semua playlist.
      */
-    public function index(Request $request) // <-- Tambahkan Request $request
+    public function index(Request $request)
     {
-        $this->authorize('viewAny', Playlist::class);
+        // $this->authorize('viewAny', Playlist::class);
         
-        // Mulai query
-        $query = Playlist::withCount('media')->latest();
+        $query = Playlist::withCount('musics')->latest(); // Hitung jumlah musik
 
-        // Tambahkan logika pencarian
         if ($request->filled('search')) {
-            $search = $request->input('search');
-            $query->where('name', 'LIKE', "%{$search}%");
+            $query->where('name', 'LIKE', "%{$request->input('search')}%");
         }
         
-        // Eksekusi query dengan paginasi
         $playlists = $query->paginate(10)->withQueryString();
 
         return Inertia::render('Admin/Playlists/Index', [
             'playlists' => $playlists,
-            'filters' => $request->only(['search']), // <-- Kirim filter ke frontend
-            'can' => ['manage_playlists' => auth()->user()->can('manage_playlists')]
+            'filters' => $request->only(['search']),
         ]);
     }
 
     /**
-     * Show the form for creating a new resource.
+     * Menampilkan form untuk membuat playlist baru.
      */
     public function create()
     {
         $this->authorize('create', Playlist::class);
         return Inertia::render('Admin/Playlists/Form', [
-            'allMedia' => Media::where('is_approved', true)->get(['id', 'title', 'source_type', 'source_value']),
+            // Kirim semua musik yang tersedia ke form
+            'allMusic' => Music::latest()->get(['id', 'title', 'singer']),
             'playlist' => null,
         ]);
     }
 
     /**
-     * Store a newly created resource in storage.
+     * Menyimpan playlist baru.
      */
     public function store(StorePlaylistRequest $request)
     {
         $validated = $request->validated();
         
-        DB::transaction(function () use ($validated) {
-            // PERBAIKAN: Hanya buat playlist dengan data yang relevan
-            $playlist = Playlist::create([
-                'name' => $validated['name'],
-                'description' => $validated['description'],
-            ]);
+        DB::transaction(function () use ($validated, $request) {
+            $playlist = Playlist::create($request->only('name', 'description'));
             
-            // Format data untuk sync()
-            $mediaToSync = [];
-            if (!empty($validated['media'])) {
-                foreach ($validated['media'] as $mediaItem) {
-                    $mediaToSync[$mediaItem['id']] = ['play_order' => $mediaItem['play_order']];
+            $musicToSync = [];
+            if (!empty($validated['music'])) {
+                foreach ($validated['music'] as $index => $musicItem) {
+                    $musicToSync[$musicItem['id']] = ['play_order' => $index + 1];
                 }
             }
             
-            $playlist->media()->sync($mediaToSync);
+            $playlist->musics()->sync($musicToSync);
         });
 
-        return Redirect::route('admin.playlists.index')->with(['message' => 'Playlist berhasil dibuat.', 'type' => 'success']);
+        return Redirect::route('admin.playlists.index')->with('success', 'Playlist musik berhasil dibuat.');
     }
 
     /**
-     * Display the specified resource.
-     */
-    public function show(string $id)
-    {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
+     * Menampilkan form untuk mengedit playlist.
      */
     public function edit(Playlist $playlist)
     {
         $this->authorize('update', $playlist);
         
-        // Load media yang sudah terhubung, dan urutkan berdasarkan 'play_order'
-        $playlist->load(['media' => function ($query) {
-            $query->orderBy('media_playlist.play_order');
+        // Load musik yang sudah terhubung, urutkan berdasarkan play_order
+        $playlist->load(['musics' => function ($query) {
+            $query->orderBy('music_playlist.play_order');
         }]);
 
         return Inertia::render('Admin/Playlists/Form', [
-            'allMedia' => Media::where('is_approved', true)->get(['id', 'title', 'source_type', 'source_value']),
+            'allMusic' => Music::latest()->get(['id', 'title', 'singer']),
             'playlist' => $playlist,
         ]);
     }
 
 
     /**
-     * Update the specified resource in storage.
+     * Memperbarui playlist yang sudah ada.
      */
     public function update(UpdatePlaylistRequest $request, Playlist $playlist)
     {
         $validated = $request->validated();
         
-        DB::transaction(function () use ($validated, $playlist) {
-            // PERBAIKAN: Hanya update playlist dengan data yang relevan
-            $playlist->update([
-                'name' => $validated['name'],
-                'description' => $validated['description'],
-            ]);
+        DB::transaction(function () use ($validated, $playlist, $request) {
+            $playlist->update($request->only('name', 'description'));
             
-            $mediaToSync = [];
-            if (!empty($validated['media'])) {
-                foreach ($validated['media'] as $mediaItem) {
-                    $mediaToSync[$mediaItem['id']] = ['play_order' => $mediaItem['play_order']];
+            $musicToSync = [];
+            if (!empty($validated['music'])) {
+                foreach ($validated['music'] as $index => $musicItem) {
+                    $musicToSync[$musicItem['id']] = ['play_order' => $index + 1];
                 }
             }
             
-            $playlist->media()->sync($mediaToSync);
+            $playlist->musics()->sync($musicToSync);
         });
 
-        return Redirect::route('admin.playlists.index')->with(['message' => 'Playlist berhasil diperbarui.', 'type' => 'success']);
+        return Redirect::route('admin.playlists.index')->with('success', 'Playlist musik berhasil diperbarui.');
     }
 
+
     /**
-     * Remove the specified resource from storage.
+     * Menghapus playlist.
      */
     public function destroy(Playlist $playlist)
     {
         $this->authorize('delete', $playlist);
-        $playlist->delete(); // Relasi di tabel pivot akan terhapus otomatis jika foreign key di set `onDelete('cascade')`
-        return Redirect::route('admin.playlists.index')->with(['message' => 'Playlist berhasil dihapus.', 'type' => 'success']);
+        $playlist->delete();
+        return Redirect::route('admin.playlists.index')->with('success', 'Playlist berhasil dihapus.');
     }
 }

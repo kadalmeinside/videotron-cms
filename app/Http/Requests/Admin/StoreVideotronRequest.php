@@ -30,6 +30,8 @@ class StoreVideotronRequest extends FormRequest
             'status' => 'required|in:active,inactive,maintenance',
             'device_id' => ['nullable', 'string', 'max:255', 'unique:videotrons,device_id'],
             'password' => ['nullable', 'string', 'min:6'],
+            'playlist_id' => ['nullable', 'integer', 'exists:playlists,id'],
+            'schedule_id' => ['nullable', 'integer', 'exists:schedules,id'],
         ];
     }
 }

@@ -17,7 +17,7 @@ class ScheduleItemController extends Controller
     public function store(Request $request)
     {
         $validated = $request->validate([
-            'videotron_id' => 'required|exists:videotrons,id',
+            'schedule_id' => 'required|exists:schedules,id',
             'media_id' => 'required|exists:media,id',
             'schedule_date' => 'required|date_format:Y-m-d',
             'play_time' => ['required', 'date_format:H:i', new NoScheduleOverlap],
@@ -30,7 +30,7 @@ class ScheduleItemController extends Controller
         $playAt = Carbon::createFromFormat('Y-m-d H:i', $validated['schedule_date'] . ' ' . $validated['play_time']);
 
         ScheduleItem::create([
-            'videotron_id' => $validated['videotron_id'],
+            'schedule_id' => $validated['schedule_id'],
             'media_id' => $validated['media_id'],
             'play_at' => $playAt,
             'duration_in_seconds' => $duration,

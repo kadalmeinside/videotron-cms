@@ -36,6 +36,8 @@ class UpdateVideotronRequest extends FormRequest
                 Rule::unique('videotrons', 'device_id')->ignore($this->videotron->id),
             ],
             'password' => ['nullable', 'string', 'min:6'],
+            'playlist_id' => ['nullable', 'integer', 'exists:playlists,id'],
+            'schedule_id' => ['nullable', 'integer', 'exists:schedules,id'],
         ];
     }
 }

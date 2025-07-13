@@ -23,15 +23,21 @@ class Videotron extends Model
         'password',
     ];
 
-    public function schedules()
+    public function schedule()
     {
-        return $this->hasMany(Schedule::class);
+        return $this->belongsTo(Schedule::class);
     }
-
+    
     public function scheduleItems(): HasMany
     {
         return $this->hasMany(ScheduleItem::class);
     }
+
+    public function backgroundPlaylist()
+    {
+        return $this->belongsTo(Playlist::class, 'playlist_id');
+    }
+
 
     public function getRouteKeyName()
     {

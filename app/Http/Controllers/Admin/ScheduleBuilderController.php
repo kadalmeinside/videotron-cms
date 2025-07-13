@@ -22,7 +22,7 @@ class ScheduleBuilderController extends Controller
 
         return Inertia::render('Admin/Schedules/Builder', [
             // Kirim daftar semua videotron untuk pilihan dropdown
-            'allVideotrons' => Videotron::orderBy('name')->get(['id', 'device_id', 'name']),
+            'allSchedules' => Schedule::orderBy('name')->get(['id', 'name']),
             
             // Kirim daftar semua media yang sudah disetujui untuk di-drag-and-drop
             'allMedia' => Media::where('is_approved', true)

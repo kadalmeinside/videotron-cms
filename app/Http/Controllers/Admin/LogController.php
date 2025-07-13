@@ -19,7 +19,7 @@ class LogController extends Controller
     {
         $this->authorize('view_reports');
 
-        $query = SyncedPlayLog::with('videotron:id,name,uuid')->latest('logged_at');
+        $query = SyncedPlayLog::with('videotron:id,name,device_id')->latest('logged_at');
 
         if ($request->filled('videotron_id')) {
             $query->where('videotron_id', $request->videotron_id);

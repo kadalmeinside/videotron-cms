@@ -22,6 +22,10 @@ const can = computed(() => page.props.can || {});
 const flashMessage = computed(() => page.props.flash?.message);
 const flashType = computed(() => page.props.flash?.type || 'info');
 
+const props = defineProps({
+    allPlaylists: Array, 
+    allSchedules: Array, 
+});
 // State
 const showVideotronModal = ref(false);
 const isEditMode = ref(false);
@@ -39,6 +43,8 @@ const form = useForm({
     status: 'active',
     device_id: '',
     password: '',
+    playlist_id: '',
+    schedule_id: '',
 });
 
 // Watcher untuk search
@@ -72,6 +78,8 @@ const openEditModal = (videotron) => {
     form.resolution = videotron.resolution;
     form.status = videotron.status;
     form.device_id = videotron.device_id;
+    form.playlist_id = videotron.playlist_id || '';
+    form.schedule_id = videotron.schedule_id || '';
     showVideotronModal.value = true;
 };
 
@@ -174,6 +182,24 @@ const deleteVideotron = () => {
                         <InputLabel for="password" value="Password Player" />
                         <TextInput id="password" v-model="form.password" type="password" class="mt-1 w-full" :placeholder="isEditMode ? 'Kosongkan jika tidak ingin diubah' : 'Min. 6 karakter'" />
                         <InputError :message="form.errors.password" class="mt-2" />
+                    </div>
+                    <div class="md:col-span-2">
+                        <InputLabel for="playlist_id" value="Playlist Musik Latar (Opsional)" />
+                        <select v-model="form.playlist_id" id="playlist_id" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm">
+                            <option value="">-- Tidak Ada Musik Latar --</option>
+                            <option v-for="playlist in allPlaylists" :key="playlist.id" :value="playlist.id">
+                                {{ playlist.name }}
+                            </option>
+                        </select>
+                    </div>
+                    <div class="md:col-span-2">
+                        <InputLabel for="schedule_id" value="Schedule (Opsional)" />
+                        <select v-model="form.schedule_id" id="playlist_id" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm">
+                            <option value="">-- Tidak Ada Schedule --</option>
+                            <option v-for="schedule in allSchedules" :key="schedule.id" :value="schedule.id">
+                                {{ schedule.name }}
+                            </option>
+                        </select>
                     </div>
                     <div>
                         <InputLabel for="location_name" value="Nama Lokasi" required />

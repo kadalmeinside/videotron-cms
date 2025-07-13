@@ -5,7 +5,9 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Admin\StoreVideotronRequest;
 use App\Http\Requests\Admin\UpdateVideotronRequest;
+use App\Models\Schedule;
 use App\Models\Videotron;
+use App\Models\Playlist;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;  
 use Illuminate\Support\Facades\Redirect;
@@ -29,6 +31,8 @@ class VideotronController extends Controller
 
         return Inertia::render('Admin/Videotrons/Index', [
             'videotronList' => $videotrons,
+            'allPlaylists' => Playlist::orderBy('name')->get(['id', 'name']),
+            'allSchedules' => Schedule::orderBy('name')->get(['id', 'name']),
             'filters' => $request->only(['search']),
             'can' => ['manage_videotrons' => $request->user()->can('manage_videotrons')]
         ]);

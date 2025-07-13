@@ -22,18 +22,11 @@ class ScheduleController extends Controller
     {
         $this->authorize('manage_schedules');
 
-        $videotrons = Videotron::orderBy('name')
-            ->with(['scheduleItems' => function ($query) {
-                // Ambil 3 jadwal berikutnya yang akan datang
-                $query->where('play_at', '>=', now())
-                      ->orderBy('play_at', 'asc')
-                      ->limit(3)
-                      ->with('media:id,title'); // Ambil juga judul medianya
-            }])
-            ->get();
-
+        $schedules = Schedule::withCount('scheduleItems')->latest()->paginate(10);
+        
         return Inertia::render('Admin/Schedules/Index', [
-            'videotrons' => $videotrons,
+            'schedules' => $schedules,
+            'can' => ['manage_schedules' => auth()->user()->can('manage_schedules')]
         ]);
     }
 
@@ -48,33 +41,36 @@ class ScheduleController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    // public function store(StoreScheduleRequest $request)
-    // {
-    //     $schedule = Schedule::create($request->validated());
-    //     return Redirect::back()->with(['message' => 'Jadwal berhasil dibuat.', 'type' => 'success']);
-    // }
+    public function store(Request $request)
+    {
+        $this->authorize('manage_schedules');
+
+        $validated = $request->validate([
+            'name' => 'required|string|max:255|unique:schedules,name',
+            'description' => 'nullable|string',
+        ]);
+
+        Schedule::create($validated);
+
+        return Redirect::route('admin.schedules.index')->with('success', 'Template jadwal berhasil dibuat.');
+    }
 
     /**
      * Display the specified resource.
      */
-    public function show(Videotron $videotron)
+    public function show(Schedule $schedule)
     {
         $this->authorize('manage_schedules');
 
-        // Ambil semua item jadwal untuk videotron ini, dan eager load media terkait
-        $items = $videotron->scheduleItems()->with('media:id,title,duration')->orderBy('play_at')->get();
+        $items = $schedule->scheduleItems()->with('media:id,title,duration')->orderBy('play_at')->get();
 
-        // Kelompokkan item jadwal berdasarkan tanggal (YYYY-MM-DD)
         $scheduledDays = $items->groupBy(function ($item) {
             return $item->play_at->format('Y-m-d');
         });
 
         return Inertia::render('Admin/Schedules/Builder', [
-            // Kirim data videotron yang sedang diedit
-            'videotron' => $videotron,
-            // Kirim jadwal yang sudah dikelompokkan
+            'schedule' => $schedule,
             'scheduledDays' => $scheduledDays,
-            // Kirim semua media yang bisa dipilih untuk ditambahkan
             'allMedia' => Media::where('is_approved', true)
                             ->with('client:id,company_name')
                             ->get(['id', 'title', 'duration']),
@@ -92,16 +88,27 @@ class ScheduleController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, string $id)
+    public function update(Request $request, Schedule $schedule)
     {
-        //
+        $this->authorize('manage_schedules');
+        
+        $validated = $request->validate([
+            'name' => ['required', 'string', 'max:255', \Illuminate\Validation\Rule::unique('schedules')->ignore($schedule->id)],
+            'description' => 'nullable|string',
+        ]);
+
+        $schedule->update($validated);
+
+        return Redirect::route('admin.schedules.index')->with('success', 'Template jadwal berhasil diperbarui.');
     }
 
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(string $id)
+    public function destroy(Schedule $schedule)
     {
-        //
+        $this->authorize('manage_schedules');
+        $schedule->delete();
+        return Redirect::route('admin.schedules.index')->with('success', 'Template jadwal berhasil dihapus.');
     }
 }
