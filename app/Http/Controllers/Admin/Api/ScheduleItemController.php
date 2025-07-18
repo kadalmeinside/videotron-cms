@@ -25,10 +25,8 @@ class ScheduleItemController extends Controller
             'play_time' => ['required', 'date_format:H:i', new NoScheduleOverlap],
         ]);
 
-        // Ambil durasi dari media yang dipilih
         $duration = Media::find($validated['media_id'])->duration;
 
-        // Gabungkan tanggal dan waktu menjadi satu timestamp
         $playAt = Carbon::createFromFormat('Y-m-d H:i', $validated['schedule_date'] . ' ' . $validated['play_time']);
 
         ScheduleItem::create([
@@ -74,7 +72,6 @@ class ScheduleItemController extends Controller
         $sourceDate = $validated['source_date'];
         $targetDate = $validated['target_date'];
 
-        // 1. Ambil semua item dari tanggal sumber
         $sourceItems = $schedule->scheduleItems()
             ->whereDate('play_at', $sourceDate)
             ->get();
@@ -83,33 +80,28 @@ class ScheduleItemController extends Controller
             return response()->json(['message' => 'Tidak ada item untuk disalin dari tanggal sumber.'], 404);
         }
 
-        // 2. Ambil semua item yang sudah ada di tanggal tujuan untuk pengecekan tumpang tindih
         $existingTargetItems = $schedule->scheduleItems()
             ->whereDate('play_at', $targetDate)
             ->get();
 
-        // 3. 🧠 Lakukan pengecekan tumpang tindih di memori SEBELUM insert ke database
         foreach ($sourceItems as $itemToCopy) {
-            // Hitung rentang waktu item jika disalin ke tanggal tujuan
             $playTime = Carbon::parse($itemToCopy->play_at)->format('H:i:s');
             $newStartTime = Carbon::parse($targetDate . ' ' . $playTime);
-            $newEndTime = $newStartTime->copy()->addSeconds($itemToCopy->duration_in_seconds);
+            
+            $newEndTime = $newStartTime->copy()->addSeconds((int) $itemToCopy->duration_in_seconds);
 
-            // Cek terhadap setiap item yang sudah ada di tanggal tujuan
             foreach ($existingTargetItems as $existingItem) {
                 $existingStartTime = Carbon::parse($existingItem->play_at);
-                $existingEndTime = $existingStartTime->copy()->addSeconds($existingItem->duration_in_seconds);
+                $existingEndTime = $existingStartTime->copy()->addSeconds((int) $existingItem->duration_in_seconds);
 
-                // Logika overlap: (StartA < EndB) and (EndA > StartB)
                 if ($newStartTime < $existingEndTime && $newEndTime > $existingStartTime) {
                     return response()->json([
                         'message' => 'Operasi gagal. Jadwal yang akan disalin tumpang tindih dengan jadwal yang sudah ada di tanggal tujuan pada sekitar jam ' . $newStartTime->format('H:i')
-                    ], 422); // 422 Unprocessable Entity
+                    ], 422);
                 }
             }
         }
 
-        // 4. Jika semua pengecekan lolos, lakukan penyalinan dalam satu transaksi
         try {
             DB::transaction(function () use ($sourceItems, $targetDate, $schedule) {
                 foreach ($sourceItems as $itemToCopy) {
@@ -125,7 +117,6 @@ class ScheduleItemController extends Controller
                 }
             });
         } catch (\Exception $e) {
-            // Tangani jika ada error saat transaksi
             report($e);
             return response()->json(['message' => 'Terjadi kesalahan internal saat menyalin jadwal.'], 500);
         }

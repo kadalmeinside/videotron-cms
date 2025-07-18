@@ -92,7 +92,6 @@ class ScheduleController extends Controller
         $pageDurationInDays = 14;
         $endDate = $startDate->clone()->addDays($pageDurationInDays - 1);
 
-        // Query ini tidak masalah karena tidak ada groupBy/distinct
         $itemsForCurrentPage = $schedule->scheduleItems()
             ->with('media:id,title,duration')
             ->whereBetween('play_at', [$startDate->startOfDay(), $endDate->endOfDay()])
@@ -103,15 +102,13 @@ class ScheduleController extends Controller
             return $item->play_at->format('Y-m-d');
         });
 
-        // --- BLOK YANG DIPERBAIKI DENGAN REORDER() ---
         $allScheduledDates = $schedule->scheduleItems()
-            ->reorder() // Hapus default order by dari relasi
+            ->reorder() 
             ->select(DB::raw('DATE(play_at) as schedule_date'))
             ->groupBy('schedule_date')
             ->orderBy('schedule_date', 'asc')
             ->pluck('schedule_date')
             ->all();
-        // --- AKHIR BLOK ---
 
         return Inertia::render('Admin/Schedules/Builder', [
             'schedule' => $schedule,
