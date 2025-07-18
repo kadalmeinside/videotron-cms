@@ -2,6 +2,7 @@
 
 <p align="center"\>
 Aplikasi web untuk mengelola konten, jadwal, dan pemantauan jaringan videotron (digital signage).
+</p>
 
 
 <p align="center">
