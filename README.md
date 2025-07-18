@@ -1,66 +1,134 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# CMS Manajemen Media & Videotron
+
+<p align="center"\>
+Aplikasi web untuk mengelola konten, jadwal, dan pemantauan jaringan videotron (digital signage).
+
 
 <p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+    <a href="https://laravel.com" target="_blank">
+    <img src="https://img.shields.io/badge/Laravel-v12-FF2D20?style=for-the-badge&logo=laravel&logoColor=white" alt="Laravel Logo"></a>
+    <img src="https://img.shields.io/badge/Vue.js-3-4FC08D?style=for-the-badge\&logo=vue.js" alt="Vue.js 3"\>
+    <img src="https://img.shields.io/badge/Inertia.js-8A2BE2?style=for-the-badge" alt="Inertia.js"\>
+    <img src="https://img.shields.io/badge/Tailwind\_CSS-38B2AC?style=for-the-badge\&logo=tailwind-css" alt="Tailwind CSS"\>
+</p\>
 
-## About Laravel
+## 📄 Tentang Proyek
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+Aplikasi ini adalah **Content Management System (CMS)** yang dirancang khusus untuk mengelola konten pada jaringan videotron atau layar *digital signage*. Sistem ini memungkinkan administrator untuk mengunggah aset media, membuat jadwal pemutaran yang kompleks, mengelola perangkat videotron dari jarak jauh, dan memantau status pemutaran secara *real-time*.
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+Dibangun dengan **Laravel** untuk backend yang tangguh dan **Vue.js** dengan **Inertia.js** untuk antarmuka pengguna yang cepat dan reaktif seperti aplikasi *single-page*.
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+-----
 
-## Learning Laravel
+## ✨ Fitur Utama
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+  - **Manajemen Videotron**: CRUD untuk perangkat videotron, termasuk informasi nama, ID perangkat, lokasi, resolusi, dan status (Aktif, Nonaktif, Perawatan).
+  - **Pustaka Media**: Mengunggah, mengelola, dan menyetujui aset media seperti video (MP4) dan gambar (JPG, PNG).
+  - **Manajemen Playlist**: Membuat dan mengelola playlist musik latar (MP3) yang dapat dihubungkan ke videotron.
+  - **Pembuat Jadwal (Schedule Builder)**: Antarmuka visual berbasis kalender untuk membuat dan mengedit jadwal pemutaran harian.
+      - Mendukung *drag-and-drop* untuk mengatur urutan item.
+      - Fitur "Salin Jadwal" untuk menduplikasi jadwal ke tanggal lain.
+      - Validasi otomatis untuk mencegah jadwal tumpang tindih (*overlapping*).
+  - **Manajemen Pengguna & Peran**: Sistem hak akses berbasis peran (Admin, Content Manager, Client) menggunakan `spatie/laravel-permission`.
+  - **Pemantauan & Laporan**: Memantau status konektivitas perangkat dan menghasilkan laporan pemutaran konten (*playlog*).
 
-You may also try the [Laravel Bootcamp](https://bootcamp.laravel.com), where you will be guided through building a modern Laravel application from scratch.
+-----
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+## 💻 Tumpukan Teknologi (Tech Stack)
 
-## Laravel Sponsors
+  - **Backend**: Laravel 11
+  - **Frontend**: Vue.js 3, Inertia.js, Tailwind CSS
+  - **Database**: MySQL / MariaDB
+  - **Server**: Nginx / Apache
+  - **Fitur Utama Laravel**: Eloquent ORM, Sanctum, Spatie Laravel Permission, Carbon.
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the [Laravel Partners program](https://partners.laravel.com).
+-----
 
-### Premium Partners
+## 🚀 Instalasi & Pengaturan Lokal
 
-- **[Vehikl](https://vehikl.com/)**
-- **[Tighten Co.](https://tighten.co)**
-- **[WebReinvent](https://webreinvent.com/)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel/)**
-- **[Cyber-Duck](https://cyber-duck.co.uk)**
-- **[DevSquad](https://devsquad.com/hire-laravel-developers)**
-- **[Jump24](https://jump24.co.uk)**
-- **[Redberry](https://redberry.international/laravel/)**
-- **[Active Logic](https://activelogic.com)**
-- **[byte5](https://byte5.de)**
-- **[OP.GG](https://op.gg)**
+Berikut adalah langkah-langkah untuk menjalankan proyek ini di lingkungan pengembangan lokal.
 
-## Contributing
+1.  **Clone repository ini:**
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+    ```bash
+    git clone [URL_REPOSITORY_ANDA]
+    cd [NAMA_FOLDER_PROYEK]
+    ```
 
-## Code of Conduct
+2.  **Install dependensi PHP (Composer):**
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+    ```bash
+    composer install
+    ```
 
-## Security Vulnerabilities
+3.  **Install dependensi JavaScript (NPM):**
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+    ```bash
+    npm install
+    ```
 
-## License
+4.  **Buat file `.env`:**
+    Salin dari file contoh.
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+    ```bash
+    cp .env.example .env
+    ```
+
+5.  **Generate kunci aplikasi:**
+
+    ```bash
+    php artisan key:generate
+    ```
+
+6.  **Konfigurasi file `.env`:**
+    Buka file `.env` dan atur koneksi database Anda (DB\_DATABASE, DB\_USERNAME, DB\_PASSWORD) dan variabel lain yang diperlukan seperti `APP_URL`.
+
+7.  **Jalankan migrasi database:**
+    Perintah ini akan membuat semua tabel yang dibutuhkan di database Anda.
+
+    ```bash
+    php artisan migrate
+    ```
+
+8.  **(Opsional) Jalankan Seeder:**
+    Jika ada, seeder akan mengisi database dengan data awal (misalnya, peran dan pengguna admin).
+
+    ```bash
+    php artisan db:seed
+    ```
+
+9.  **Buat Symbolic Link untuk Storage:**
+    Ini penting agar file yang diunggah dapat diakses secara publik.
+
+    ```bash
+    php artisan storage:link
+    ```
+
+10. **Jalankan server pengembangan:**
+    Perintah ini akan menjalankan server Vite (untuk frontend) dan server PHP (untuk backend) secara bersamaan.
+
+    ```bash
+    npm run dev
+    ```
+
+11. **Buka aplikasi:**
+    Akses aplikasi melalui `http://127.0.0.1:8000` atau URL yang ditampilkan di terminal Anda.
+
+-----
+
+## 🔧 Penggunaan
+
+  - **Admin Panel**: Akses panel admin melalui `/admin/login`. Gunakan akun yang dibuat oleh seeder atau yang Anda daftarkan dengan peran yang sesuai.
+  - **Player Endpoint**: Perangkat videotron (player) akan berinteraksi dengan endpoint API yang tersedia untuk otentikasi, mengambil jadwal, dan mengirimkan log pemutaran.
+
+-----
+
+## 🤝 Berkontribusi
+
+Terima kasih telah mempertimbangkan untuk berkontribusi\! Saat ini, proyek ini dikelola secara internal. Namun, saran dan laporan bug sangat kami hargai.
+
+-----
+
+## 📜 Lisensi
+
+Proyek ini menggunakan lisensi [MIT license](https://opensource.org/licenses/MIT).
