@@ -28,6 +28,7 @@ Route::middleware(['auth:sanctum'])->prefix('admin/schedule')->name('api.admin.s
 });
 
 Route::middleware(['auth:sanctum'])->prefix('admin')->name('api.admin.')->group(function () {
+    Route::post('schedule-items/{schedule}/copy-date', [ScheduleItemController::class, 'copyDate'])->name('copydate');
     Route::apiResource('schedule-items', ScheduleItemController::class)->except(['index', 'show']);
 });
 
@@ -42,12 +43,7 @@ Route::middleware('auth:sanctum')->group(function () {
 });
 
 Route::middleware('auth:sanctum')->prefix('device')->group(function () {
-    // Endpoint untuk cek versi
     Route::get('/config', [DeviceController::class, 'getConfig']);
-    
-    // Endpoint untuk mengambil detail schedule berdasarkan ID
     Route::get('/schedule/{schedule}', [DeviceController::class, 'getScheduleDetail']);
-    
-    // Endpoint untuk mengambil detail playlist musik berdasarkan ID
     Route::get('/playlist/{playlist}', [DeviceController::class, 'getPlaylistDetail']);
 });

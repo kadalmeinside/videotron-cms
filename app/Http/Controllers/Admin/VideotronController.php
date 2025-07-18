@@ -22,11 +22,16 @@ class VideotronController extends Controller
     {
         $this->authorize('viewAny', Videotron::class);
         $query = Videotron::orderBy('name');
+
         if ($request->filled('search')) {
             $search = $request->input('search');
-            $query->where('name', 'LIKE', "%{$search}%")
-                  ->orWhere('location_name', 'LIKE', "%{$search}%");
+            $query->where(function ($q) use ($search) {
+                $q->where('name', 'LIKE', "%{$search}%")
+                ->orWhere('location_name', 'LIKE', "%{$search}%")
+                ->orWhere('device_id', 'LIKE', "%{$search}%"); // <-- TAMBAHKAN BARIS INI
+            });
         }
+
         $videotrons = $query->paginate(10)->withQueryString();
 
         return Inertia::render('Admin/Videotrons/Index', [

@@ -9,7 +9,7 @@ import InputError from '@/Components/InputError.vue';
 import InputLabel from '@/Components/InputLabel.vue';
 import TextInput from '@/Components/TextInput.vue';
 import Toast from '@/Components/Toast.vue';
-import { PlusIcon, PencilIcon, TrashIcon } from '@heroicons/vue/20/solid';
+import { PlusIcon, PencilIcon, TrashIcon, XMarkIcon } from '@heroicons/vue/20/solid';
 import { ref, watch, computed } from 'vue';
 import { debounce } from 'lodash';
 
@@ -26,6 +26,7 @@ const props = defineProps({
     allPlaylists: Array, 
     allSchedules: Array, 
 });
+
 // State
 const showVideotronModal = ref(false);
 const isEditMode = ref(false);
@@ -57,6 +58,10 @@ watch(searchQuery, debounce((value) => {
     });
 }, 300));
 
+const clearSearch = () => {
+    searchQuery.value = '';
+};
+
 // Modal Functions
 const openCreateModal = () => {
     isEditMode.value = false;
@@ -69,7 +74,6 @@ const openEditModal = (videotron) => {
     isEditMode.value = true;
     form.reset();
     form.clearErrors();
-    // Isi form dengan data yang ada
     form.id = videotron.id;
     form.name = videotron.name;
     form.location_name = videotron.location_name;
@@ -127,38 +131,101 @@ const deleteVideotron = () => {
                 <div class="bg-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg">
                     <div class="p-6 text-gray-900 dark:text-gray-100">
                         <div class="mb-6 flex flex-col md:flex-row md:justify-between md:items-center gap-4">
-                            <TextInput type="text" v-model="searchQuery" placeholder="Cari nama atau lokasi..." class="w-full md:max-w-md" />
+                            <div class="relative w-full md:max-w-md">
+                                <TextInput 
+                                    type="text" 
+                                    v-model="searchQuery" 
+                                    placeholder="Cari nama, lokasi, atau device ID..." 
+                                    class="w-full pr-10" 
+                                />
+                                <button 
+                                    v-if="searchQuery" 
+                                    @click="clearSearch" 
+                                    type="button" 
+                                    class="absolute inset-y-0 right-0 flex items-center pr-3 text-gray-400 hover:text-gray-600"
+                                    aria-label="Clear search"
+                                >
+                                    <XMarkIcon class="h-5 w-5" />
+                                </button>
+                            </div>
                             <PrimaryButton @click="openCreateModal" v-if="can?.manage_videotrons">
                                 <PlusIcon class="h-5 w-5 mr-2" /> Tambah Videotron
                             </PrimaryButton>
                         </div>
 
-                        <div class="overflow-x-auto">
-                            <table class="min-w-full divide-y divide-gray-200">
-                                <thead class="bg-gray-50">
-                                    <tr>
-                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Nama</th>
-                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Device ID</th>
-                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Lokasi</th>
-                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Status</th>
-                                        <th class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase">Aksi</th>
-                                    </tr>
-                                </thead>
-                                <tbody class="bg-white divide-y divide-gray-200">
-                                    <tr v-if="!videotronList.data.length"><td colspan="5" class="px-6 py-4 text-center">Tidak ada data.</td></tr>
-                                    <tr v-else v-for="item in videotronList.data" :key="item.id">
-                                        <td class="px-6 py-4 font-medium">{{ item.name }}</td>
-                                        <td class="px-6 py-4 font-mono text-xs text-gray-500">{{ item.device_id || '-' }}</td>
-                                        <td class="px-6 py-4">{{ item.location_name }}</td>
-                                        <td class="px-6 py-4"><span :class="['px-2 inline-flex text-xs leading-5 font-semibold rounded-full', item.status === 'active' ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800']">{{ item.status }}</span></td>
-                                        <td class="px-6 py-4 text-right">
+                        <div v-if="!videotronList.data.length" class="text-center py-12 text-gray-500">
+                            Tidak ada data untuk ditampilkan.
+                        </div>
+                        <div v-else>
+                            <div class="hidden md:block overflow-x-auto">
+                                <table class="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
+                                    <thead class="bg-gray-50 dark:bg-gray-700/50">
+                                        <tr>
+                                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase">Nama</th>
+                                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase">Device ID</th>
+                                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase">Lokasi</th>
+                                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase">Status</th>
+                                            <th class="px-6 py-3 text-right text-xs font-medium text-gray-500 dark:text-gray-300 uppercase">Aksi</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody class="bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-700">
+                                        <tr v-for="item in videotronList.data" :key="item.id">
+                                            <td class="px-6 py-4 font-medium">{{ item.name }}</td>
+                                            <td class="px-6 py-4 font-mono text-xs text-gray-500 dark:text-gray-400">{{ item.device_id || '-' }}</td>
+                                            <td class="px-6 py-4">{{ item.location_name }}</td>
+                                            <td class="px-6 py-4"><span :class="['px-2 inline-flex text-xs leading-5 font-semibold rounded-full', item.status === 'active' ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800']">{{ item.status }}</span></td>
+                                            <td class="px-6 py-4 text-right">
+                                                <button @click="openEditModal(item)" class="p-1 mr-2 text-indigo-600 hover:text-indigo-900"><PencilIcon class="h-5 w-5" /></button>
+                                                <button @click="confirmDeleteVideotron(item)" class="p-1 text-red-600 hover:text-red-900"><TrashIcon class="h-5 w-5" /></button>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+
+                            <div class="md:hidden space-y-4">
+                                <div v-for="item in videotronList.data" :key="item.id" class="bg-gray-50 dark:bg-gray-700/50 p-4 rounded-lg shadow">
+                                    <div class="flex justify-between items-start mb-3">
+                                        <h3 class="font-bold text-lg pr-4">{{ item.name }}</h3>
+                                        <div class="flex-shrink-0">
                                             <button @click="openEditModal(item)" class="p-1 mr-2 text-indigo-600 hover:text-indigo-900"><PencilIcon class="h-5 w-5" /></button>
                                             <button @click="confirmDeleteVideotron(item)" class="p-1 text-red-600 hover:text-red-900"><TrashIcon class="h-5 w-5" /></button>
-                                        </td>
-                                    </tr>
-                                </tbody>
-                            </table>
+                                        </div>
+                                    </div>
+                                    <div class="space-y-2 text-sm">
+                                        <div class="flex justify-between">
+                                            <span class="text-gray-500 dark:text-gray-400">Lokasi:</span>
+                                            <span class="font-medium text-right">{{ item.location_name }}</span>
+                                        </div>
+                                        <div class="flex justify-between">
+                                            <span class="text-gray-500 dark:text-gray-400">Device ID:</span>
+                                            <span class="font-mono text-xs text-gray-500 dark:text-gray-400">{{ item.device_id || '-' }}</span>
+                                        </div>
+                                        <div class="flex justify-between items-center">
+                                            <span class="text-gray-500 dark:text-gray-400">Status:</span>
+                                            <span :class="['px-2 inline-flex text-xs leading-5 font-semibold rounded-full', item.status === 'active' ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800']">{{ item.status }}</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
+
+                        <div v-if="videotronList.links.length > 3" class="mt-6 flex justify-center">
+                            <div class="flex flex-wrap -mb-1">
+                                <template v-for="(link, key) in videotronList.links" :key="key">
+                                    <div v-if="link.url === null"
+                                         class="mr-1 mb-1 px-4 py-3 text-sm leading-4 text-gray-400 border rounded"
+                                         v-html="link.label" />
+                                    <Link v-else
+                                          class="mr-1 mb-1 px-4 py-3 text-sm leading-4 border rounded hover:bg-white focus:border-indigo-500 focus:text-indigo-500"
+                                          :class="{ 'bg-blue-600 text-white': link.active }"
+                                          :href="link.url"
+                                          v-html="link.label"
+                                          preserve-scroll />
+                                </template>
+                            </div>
+                        </div>
+
                     </div>
                 </div>
             </div>
@@ -194,7 +261,7 @@ const deleteVideotron = () => {
                     </div>
                     <div class="md:col-span-2">
                         <InputLabel for="schedule_id" value="Schedule (Opsional)" />
-                        <select v-model="form.schedule_id" id="playlist_id" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm">
+                        <select v-model="form.schedule_id" id="schedule_id" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm">
                             <option value="">-- Tidak Ada Schedule --</option>
                             <option v-for="schedule in allSchedules" :key="schedule.id" :value="schedule.id">
                                 {{ schedule.name }}
