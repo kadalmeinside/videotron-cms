@@ -1,0 +1,18 @@
+{
+    "sourceFile": "database/migrations/2025_08_03_023735_add_last_seen_at_to_videotrons_table.php",
+    "activeCommit": 0,
+    "commits": [
+        {
+            "activePatchIndex": 0,
+            "patches": [
+                {
+                    "date": 1754163514439,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n"
+                }
+            ],
+            "date": 1754163514439,
+            "name": "Commit-0",
+            "content": "<?php\n\nuse Illuminate\\Database\\Migrations\\Migration;\nuse Illuminate\\Database\\Schema\\Blueprint;\nuse Illuminate\\Support\\Facades\\Schema;\n\nreturn new class extends Migration\n{\n    /**\n     * Run the migrations.\n     */\n    public function up(): void\n    {\n        Schema::table('videotrons', function (Blueprint $table) {\n            $table->text('fcm_token')->nullable()->after('schedule_id');\n            $table->timestamp('last_seen_at')->nullable()->after('fcm_token');\n            $table->integer('app_version_code')->nullable()->after('last_seen_at');\n        });\n    }\n\n    /**\n     * Reverse the migrations.\n     */\n    public function down(): void\n    {\n        Schema::table('videotrons', function (Blueprint $table) {\n            $table->dropColumn(['fcm_token', 'last_seen_at','app_version_code']);\n        });\n    }\n};\n"
+        }
+    ]
+}

@@ -12,6 +12,8 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('videotrons', function (Blueprint $table) {
+            $table->text('fcm_token')->nullable()->after('schedule_id');
+            $table->timestamp('last_seen_at')->nullable()->after('fcm_token');
             $table->integer('app_version_code')->nullable()->after('last_seen_at');
         });
     }
@@ -22,7 +24,7 @@ return new class extends Migration
     public function down(): void
     {
         Schema::table('videotrons', function (Blueprint $table) {
-            $table->dropColumn('app_version_code');
+            $table->dropColumn(['fcm_token', 'last_seen_at','app_version_code']);
         });
     }
 };
