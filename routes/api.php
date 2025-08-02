@@ -8,6 +8,7 @@ use App\Http\Controllers\Admin\ScheduleBuilderController;
 use App\Http\Controllers\Admin\Api\ScheduleItemController;
 use App\Http\Controllers\Api\DeviceController;
 use App\Http\Controllers\Api\LogSyncController;
+use App\Http\Controllers\Api\DeviceApiController;
 
 Route::get('/user', function (Request $request) {
     return $request->user();
@@ -34,7 +35,6 @@ Route::middleware(['auth:sanctum'])->prefix('admin')->name('api.admin.')->group(
 
 Route::get('/device/check/{device_id}', [DeviceController::class, 'checkStatus']);
 
-// Endpoint untuk perangkat melakukan login dan mendapatkan token
 Route::post('/device/login', [DeviceController::class, 'login']);
 
 Route::middleware('auth:sanctum')->group(function () {
@@ -46,4 +46,6 @@ Route::middleware('auth:sanctum')->prefix('device')->group(function () {
     Route::get('/config', [DeviceController::class, 'getConfig']);
     Route::get('/schedule/{schedule}', [DeviceController::class, 'getScheduleDetail']);
     Route::get('/playlist/{playlist}', [DeviceController::class, 'getPlaylistDetail']);
+    Route::post('/device/heartbeat', [DeviceApiController::class, 'heartbeat']);
+    Route::post('/device/register-fcm', [DeviceApiController::class, 'registerFCMToken']);
 });
