@@ -28,10 +28,10 @@ Route::middleware(['auth:sanctum'])->prefix('admin/schedule')->name('api.admin.s
     Route::post('/save', [ScheduleBuilderController::class, 'saveSchedule'])->name('save');
 });
 
-Route::middleware(['auth:sanctum'])->prefix('admin')->name('api.admin.')->group(function () {
-    Route::post('schedule-items/{schedule}/copy-date', [ScheduleItemController::class, 'copyDate'])->name('copydate');
-    Route::apiResource('schedule-items', ScheduleItemController::class)->except(['index', 'show']);
-});
+// Route::middleware(['auth:sanctum'])->prefix('admin')->name('api.admin.')->group(function () {
+//     Route::post('schedule-items/{schedule}/copy-date', [ScheduleItemController::class, 'copyDate'])->name('copydate');
+//     Route::apiResource('schedule-items', ScheduleItemController::class)->except(['index', 'show']);
+// });
 
 Route::get('/device/check/{device_id}', [DeviceController::class, 'checkStatus']);
 
@@ -46,6 +46,6 @@ Route::middleware('auth:sanctum')->prefix('device')->group(function () {
     Route::get('/config', [DeviceController::class, 'getConfig']);
     Route::get('/schedule/{schedule}', [DeviceController::class, 'getScheduleDetail']);
     Route::get('/playlist/{playlist}', [DeviceController::class, 'getPlaylistDetail']);
-    Route::post('/heartbeat', [DeviceApiController::class, 'heartbeat']);
-    Route::post('/register-fcm', [DeviceApiController::class, 'registerFCMToken']);
+    Route::post('/device/heartbeat', [DeviceApiController::class, 'heartbeat']);
+    Route::post('/device/register-fcm', [DeviceApiController::class, 'registerFCMToken']);
 });

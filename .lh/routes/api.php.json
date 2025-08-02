@@ -1,0 +1,26 @@
+{
+    "sourceFile": "routes/api.php",
+    "activeCommit": 0,
+    "commits": [
+        {
+            "activePatchIndex": 2,
+            "patches": [
+                {
+                    "date": 1754168823098,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n"
+                },
+                {
+                    "date": 1754168855595,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -27,12 +27,12 @@\n     Route::get('/events', [ScheduleBuilderController::class, 'getEvents'])->name('events');\n     Route::post('/save', [ScheduleBuilderController::class, 'saveSchedule'])->name('save');\n });\n \n-// Route::middleware(['auth:sanctum'])->prefix('admin')->name('api.admin.')->group(function () {\n-//     Route::post('schedule-items/{schedule}/copy-date', [ScheduleItemController::class, 'copyDate'])->name('copydate');\n-//     Route::apiResource('schedule-items', ScheduleItemController::class)->except(['index', 'show']);\n-// });\n+Route::middleware(['auth:sanctum'])->prefix('admin')->name('api.admin.')->group(function () {\n+    Route::post('schedule-items/{schedule}/copy-date', [ScheduleItemController::class, 'copyDate'])->name('copydate');\n+    Route::apiResource('schedule-items', ScheduleItemController::class)->except(['index', 'show']);\n+});\n \n Route::get('/device/check/{device_id}', [DeviceController::class, 'checkStatus']);\n \n Route::post('/device/login', [DeviceController::class, 'login']);\n"
+                },
+                {
+                    "date": 1754169282102,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -45,7 +45,7 @@\n Route::middleware('auth:sanctum')->prefix('device')->group(function () {\n     Route::get('/config', [DeviceController::class, 'getConfig']);\n     Route::get('/schedule/{schedule}', [DeviceController::class, 'getScheduleDetail']);\n     Route::get('/playlist/{playlist}', [DeviceController::class, 'getPlaylistDetail']);\n-    Route::post('/device/heartbeat', [DeviceApiController::class, 'heartbeat']);\n-    Route::post('/device/register-fcm', [DeviceApiController::class, 'registerFCMToken']);\n+    Route::post('/heartbeat', [DeviceApiController::class, 'heartbeat']);\n+    Route::post('/register-fcm', [DeviceApiController::class, 'registerFCMToken']);\n });\n\\ No newline at end of file\n"
+                }
+            ],
+            "date": 1754168823098,
+            "name": "Commit-0",
+            "content": "<?php\n\nuse Illuminate\\Http\\Request;\nuse Illuminate\\Support\\Facades\\Route;\nuse App\\Http\\Controllers\\Api\\PlayerController;\nuse App\\Http\\Controllers\\Api\\PlayLogController;\nuse App\\Http\\Controllers\\Admin\\ScheduleBuilderController;\nuse App\\Http\\Controllers\\Admin\\Api\\ScheduleItemController;\nuse App\\Http\\Controllers\\Api\\DeviceController;\nuse App\\Http\\Controllers\\Api\\LogSyncController;\nuse App\\Http\\Controllers\\Api\\DeviceApiController;\n\nRoute::get('/user', function (Request $request) {\n    return $request->user();\n})->middleware('auth:sanctum');\nRoute::get('/player/{videotron:uuid}/schedule', [PlayerController::class, 'getSchedule'])->middleware('auth:sanctum');\n\nRoute::get('/player/{videotron:id}/now', [PlayerController::class, 'now']);\nRoute::post('/log/play', [PlayLogController::class, 'store']);\nRoute::post('/player/login', [PlayerController::class, 'login']);\n\nRoute::middleware('auth:sanctum')->post('/broadcasting/auth', function (Request $request) {\n    return Broadcast::auth($request);\n});\n\nRoute::middleware(['auth:sanctum'])->prefix('admin/schedule')->name('api.admin.schedule.')->group(function () {\n    Route::get('/events', [ScheduleBuilderController::class, 'getEvents'])->name('events');\n    Route::post('/save', [ScheduleBuilderController::class, 'saveSchedule'])->name('save');\n});\n\n// Route::middleware(['auth:sanctum'])->prefix('admin')->name('api.admin.')->group(function () {\n//     Route::post('schedule-items/{schedule}/copy-date', [ScheduleItemController::class, 'copyDate'])->name('copydate');\n//     Route::apiResource('schedule-items', ScheduleItemController::class)->except(['index', 'show']);\n// });\n\nRoute::get('/device/check/{device_id}', [DeviceController::class, 'checkStatus']);\n\nRoute::post('/device/login', [DeviceController::class, 'login']);\n\nRoute::middleware('auth:sanctum')->group(function () {\n    Route::get('/device/schedules', [DeviceController::class, 'getSchedules']);\n    Route::post('/logs/sync', [LogSyncController::class, 'sync']);\n});\n\nRoute::middleware('auth:sanctum')->prefix('device')->group(function () {\n    Route::get('/config', [DeviceController::class, 'getConfig']);\n    Route::get('/schedule/{schedule}', [DeviceController::class, 'getScheduleDetail']);\n    Route::get('/playlist/{playlist}', [DeviceController::class, 'getPlaylistDetail']);\n    Route::post('/device/heartbeat', [DeviceApiController::class, 'heartbeat']);\n    Route::post('/device/register-fcm', [DeviceApiController::class, 'registerFCMToken']);\n});"
+        }
+    ]
+}

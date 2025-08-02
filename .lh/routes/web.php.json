@@ -3,11 +3,15 @@
     "activeCommit": 0,
     "commits": [
         {
-            "activePatchIndex": 0,
+            "activePatchIndex": 1,
             "patches": [
                 {
                     "date": 1754168596531,
                     "content": "Index: \n===================================================================\n--- \n+++ \n"
+                },
+                {
+                    "date": 1754168998802,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -73,15 +73,8 @@\n             Route::post('settings', [SettingsController::class, 'update'])->name('settings.update');\n         });\n \n         Route::middleware(['role:admin|content-manager'])->group(function() {\n-            Route::prefix('api')->name('api.')->group(function() {\n-                Route::post('/schedule-items', [\\App\\Http\\Controllers\\Admin\\Api\\ScheduleItemController::class, 'store'])->name('schedule-items.store');\n-                Route::put('/schedule-items/{scheduleItem}', [\\App\\Http\\Controllers\\Admin\\Api\\ScheduleItemController::class, 'update'])->name('schedule-items.update');\n-                Route::delete('/schedule-items/{scheduleItem}', [\\App\\Http\\Controllers\\Admin\\Api\\ScheduleItemController::class, 'destroy'])->name('schedule-items.destroy');\n-                Route::post('/schedules/{schedule}/copy-date', [\\App\\Http\\Controllers\\Admin\\Api\\ScheduleItemController::class, 'copyDate'])->name('copydate');\n-            });\n-            \n             Route::get('dashboard', [DashboardController::class, 'index'])->name('dashboard');\n             Route::resource('videotrons', VideotronController::class);\n             Route::resource('clients', ClientController::class);\n             Route::prefix('media')->name('media.')->group(function () {\n"
                 }
             ],
             "date": 1754168596531,
