@@ -200,9 +200,9 @@ class DeviceController extends Controller
      */
     public function getPlaylistDetail(Request $request, Playlist $playlist)
     {
-        // if ($request->user()->playlist_id !== $playlist->id) {
-        //     abort(403, 'Akses ditolak.');
-        // }
+        if ($request->user()->playlist_id !== $playlist->id) {
+            abort(403, 'Akses ditolak.');
+        }
 
         $playlist->load('musics');
         
