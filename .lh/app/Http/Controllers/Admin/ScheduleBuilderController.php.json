@@ -1,0 +1,18 @@
+{
+    "sourceFile": "app/Http/Controllers/Admin/ScheduleBuilderController.php",
+    "activeCommit": 0,
+    "commits": [
+        {
+            "activePatchIndex": 0,
+            "patches": [
+                {
+                    "date": 1754167644216,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n"
+                }
+            ],
+            "date": 1754167644216,
+            "name": "Commit-0",
+            "content": "<?php\n\nnamespace App\\Http\\Controllers\\Admin;\n\nuse App\\Http\\Controllers\\Controller;\nuse App\\Models\\Media;\nuse App\\Models\\ScheduleItem;\nuse App\\Models\\Videotron;\nuse Illuminate\\Http\\Request;\nuse Illuminate\\Support\\Facades\\DB;\nuse Inertia\\Inertia;\n\nclass ScheduleBuilderController extends Controller\n{\n    /**\n     * Menampilkan halaman visual untuk membuat jadwal.\n     */\n    public function index(Request $request)\n    {\n        // Ganti dengan permission yang sesuai jika perlu\n        // $this->authorize('manage_schedules'); \n\n        return Inertia::render('Admin/Schedules/Builder', [\n            // Kirim daftar semua videotron untuk pilihan dropdown\n            'allSchedules' => Schedule::orderBy('name')->get(['id', 'name']),\n            \n            // Kirim daftar semua media yang sudah disetujui untuk di-drag-and-drop\n            'allMedia' => Media::where('is_approved', true)\n                            ->with('client:id,company_name') // Ambil data klien untuk info tambahan\n                            ->get(['id', 'title', 'duration', 'client_id', 'source_type', 'source_value']),\n        ]);\n    }\n\n    \n}\n"
+        }
+    ]
+}
