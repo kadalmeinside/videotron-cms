@@ -1,0 +1,18 @@
+{
+    "sourceFile": "app/Models/Videotron.php",
+    "activeCommit": 0,
+    "commits": [
+        {
+            "activePatchIndex": 0,
+            "patches": [
+                {
+                    "date": 1754162492269,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n"
+                }
+            ],
+            "date": 1754162492269,
+            "name": "Commit-0",
+            "content": "<?php\n\nnamespace App\\Models;\n\nuse Illuminate\\Database\\Eloquent\\Factories\\HasFactory;\nuse Illuminate\\Database\\Eloquent\\Model;\nuse Illuminate\\Database\\Eloquent\\SoftDeletes;\nuse Illuminate\\Database\\Eloquent\\Concerns\\HasUuids; \nuse Laravel\\Sanctum\\HasApiTokens;\nuse Illuminate\\Contracts\\Auth\\Authenticatable as AuthenticatableContract;\nuse Illuminate\\Auth\\Authenticatable;\nuse Illuminate\\Database\\Eloquent\\Relations\\HasMany;\n\nclass Videotron extends Model\n{\n    use HasFactory, SoftDeletes, HasUuids, HasApiTokens, Authenticatable;\n    public $incrementing = false;\n    protected $keyType = 'string';\n    \n    protected $guarded = [];\n\n    protected $hidden = [\n        'password',\n    ];\n\n    protected $casts = [\n        'last_seen_at' => 'datetime',\n    ];\n\n    public function getIsOnlineAttribute(): bool\n    {\n        return $this->last_seen_at && $this->last_seen_at->gt(now()->subMinutes(16));\n    }\n\n    /**\n     * Accessor untuk memformat waktu terakhir terlihat agar mudah dibaca.\n     */\n    public function getLastSeenAtForHumansAttribute(): string\n    {\n        return $this->last_seen_at ? $this->last_seen_at->diffForHumans() : 'Belum pernah';\n    }\n    \n    public function schedule()\n    {\n        return $this->belongsTo(Schedule::class);\n    }\n    \n    public function scheduleItems(): HasMany\n    {\n        return $this->hasMany(ScheduleItem::class);\n    }\n\n    public function backgroundPlaylist()\n    {\n        return $this->belongsTo(Playlist::class, 'playlist_id');\n    }\n\n\n    public function getRouteKeyName()\n    {\n        return 'id';\n    }\n}\n"
+        }
+    ]
+}
