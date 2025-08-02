@@ -22,4 +22,4 @@ yarn-error.log
 /.zed
 .DS_Store
 /bootstrap/cache/*.php
-/storage/framework/
+/firebase_credentials.json

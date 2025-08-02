@@ -1,0 +1,18 @@
+{
+    "sourceFile": "storage/framework/.gitignore",
+    "activeCommit": 0,
+    "commits": [
+        {
+            "activePatchIndex": 0,
+            "patches": [
+                {
+                    "date": 1754161372850,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n"
+                }
+            ],
+            "date": 1754161372850,
+            "name": "Commit-0",
+            "content": "compiled.php\nconfig.php\ndown\nevents.scanned.php\nmaintenance.php\nroutes.php\nroutes.scanned.php\nschedule-*\nservices.json\n/firebase_credentials.json\n"
+        }
+    ]
+}

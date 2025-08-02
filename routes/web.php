@@ -12,6 +12,7 @@ use App\Http\Controllers\DisplayController;
 use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\Admin\ClientController;
 use App\Http\Controllers\Admin\VideotronController;
+use App\Http\Controllers\Admin\VideotronActionController; 
 use App\Http\Controllers\Admin\MediaController;
 use App\Http\Controllers\Admin\MusicController;
 use App\Http\Controllers\Admin\MediaApprovalController;
@@ -95,6 +96,10 @@ Route::prefix('admin')->name('admin.')->group(function () {
             Route::get('/monitoring', [MonitoringController::class, 'index'])->name('monitoring.index');
             Route::get('/logs', [LogController::class, 'index'])->name('logs.index');
             Route::get('/logs/export', [LogController::class, 'export'])->name('logs.export');
+            Route::post('/videotrons/{videotron}/force-sync', [VideotronActionController::class, 'forceSync'])
+                ->name('videotrons.force-sync');
+            Route::post('/videotrons/{videotron}/force-update', [VideotronActionController::class, 'forceUpdate'])
+                ->name('videotrons.force-update');
 
         });
 
