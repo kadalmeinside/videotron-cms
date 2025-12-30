@@ -46,7 +46,7 @@ Route::get('/play/{uuid}', function ($uuid) {
 })->name('player.show');
 
 Route::get('/dashboard', function () {
-    return Inertia::render('Dashboard');
+    return redirect()->route('admin.dashboard');
 })->middleware(['auth', 'verified'])->name('dashboard');
 
 Route::middleware('auth')->group(function () {
