@@ -4,7 +4,7 @@
 /public/storage
 /storage/*.key
 /storage/pail
-/vendor
+
 .env
 .env.backup
 .env.production
@@ -20,6 +20,8 @@ yarn-error.log
 /.nova
 /.vscode
 /.zed
+/.history
+/.lh
 .DS_Store
 /bootstrap/cache/*.php
 /firebase_credentials.json
